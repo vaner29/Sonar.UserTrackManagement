@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Sonar.UserTracksManagement.Core\Sonar.UserTracksManagement.Core.csproj" />
+    </ItemGroup>
+
 </Project>
