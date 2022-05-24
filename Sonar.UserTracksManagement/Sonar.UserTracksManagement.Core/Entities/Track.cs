@@ -12,6 +12,6 @@ public class Track
         Name = name;
     }
 
-    public Guid Id { get; private set; }
+    public Guid Id { get; private init; }
     public string Name { get; private set; }
 }

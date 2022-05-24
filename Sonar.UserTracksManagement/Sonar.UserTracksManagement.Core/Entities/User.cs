@@ -2,17 +2,21 @@
 
 public class User
 {
+    private readonly List<Track> _tracks;
     private User()
     {
-        Tracks = new List<Track>();
     }
 
     public User(Guid id)
     {
         Id = id;
-        Tracks = new List<Track>();
+        _tracks = new List<Track>();
     }
 
-    public Guid Id { get; private set; }
-    public List<Track> Tracks { get; private set; }
+    public Guid Id { get; private init; }
+    public IReadOnlyList<Track> Tracks
+    {
+        get => _tracks;
+        private init => _tracks = new List<Track>();
+    }
 }

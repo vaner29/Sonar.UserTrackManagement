@@ -13,7 +13,7 @@ public class PlaylistTrack
         Track = track;
     }
 
-    public Guid Id { get; private set; }
+    public Guid Id { get; private init; }
     public uint Number { get; private set; }
-    public Track Track { get; private set; }
+    public Track Track { get; private init; }
 }

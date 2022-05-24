@@ -2,9 +2,9 @@
 
 public class Playlist
 {
+    private readonly List<PlaylistTrack> _tracks;
     private Playlist()
     {
-        Tracks = new List<PlaylistTrack>();
     }
 
     public Playlist(Guid userId, string name)
@@ -12,12 +12,16 @@ public class Playlist
         Id = Guid.NewGuid();
         UserId = userId;
         Name = name;
-        Tracks = new List<PlaylistTrack>();
+        _tracks = new List<PlaylistTrack>();
     }
 
-    public Guid Id { get; private set; }
-    public Guid UserId { get; private set; }
+    public Guid Id { get; private init; }
+    public Guid UserId { get; private init; }
     public string Name { get; private set; }
-    public List<PlaylistTrack> Tracks { get; private set; }
+    public IReadOnlyList<PlaylistTrack> Tracks
+    { 
+        get => _tracks;
+        private init => _tracks = new List<PlaylistTrack>();
+    }
 
 }
