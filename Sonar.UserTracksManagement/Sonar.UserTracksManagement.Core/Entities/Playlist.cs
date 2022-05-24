@@ -18,10 +18,11 @@ public class Playlist
     public Guid Id { get; private init; }
     public Guid UserId { get; private init; }
     public string Name { get; private set; }
-    public IReadOnlyList<PlaylistTrack> Tracks
-    { 
-        get => _tracks;
-        private init => _tracks = new List<PlaylistTrack>();
+    public IReadOnlyList<PlaylistTrack> Tracks => _tracks.AsReadOnly();
+
+    public void AddTrack(PlaylistTrack track)
+    {
+        _tracks.Add(track);
     }
 
 }

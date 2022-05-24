@@ -14,9 +14,10 @@ public class User
     }
 
     public Guid Id { get; private init; }
-    public IReadOnlyList<Track> Tracks
+    public IReadOnlyList<Track> Tracks => _tracks.AsReadOnly();
+
+    public void AddTrack(Track track)
     {
-        get => _tracks;
-        private init => _tracks = new List<Track>();
+        _tracks.Add(track);
     }
 }
