@@ -18,8 +18,6 @@ public class UserTracksController : Controller
     [HttpPost]
     public async Task<ActionResult<Guid>> AddTrack([FromHeader(Name = "Token")] string token, [FromQuery] string name)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
-        if (string.IsNullOrWhiteSpace(name)) return BadRequest();
         return Ok(await _service.AddTrackAsync(token, name));
     }
 
@@ -28,15 +26,12 @@ public class UserTracksController : Controller
     [Route("/all")]
     public async Task<ActionResult<IEnumerable<TrackDto>>> GetAllTracks([FromHeader(Name = "Token")] string token)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
         return Ok(await _service.GetAllTracksAsync(token));
     }
     
     [HttpGet]
     public async Task<ActionResult<TrackDto>> GetTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
-        if (trackId.Equals(Guid.Empty)) return BadRequest();
         return Ok(await _service.GetTrackAsync(token, trackId));
     }
     
@@ -44,8 +39,6 @@ public class UserTracksController : Controller
     [Route("/isEnoughAccess")]
     public async Task<ActionResult<bool>> CheckAccessToTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
-        if (trackId.Equals(Guid.Empty)) return BadRequest();
         return Ok(await _service.CheckAccessToTrackAsync(token, trackId));
     }
 
