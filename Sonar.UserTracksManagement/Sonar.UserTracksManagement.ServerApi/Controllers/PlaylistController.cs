@@ -15,30 +15,32 @@ public class PlaylistController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromHeader] Guid userId, [FromQuery] string name)
+    public async Task<ActionResult<Guid>> Create([FromHeader] Guid userId, [FromQuery] string name)
     {
-        if (userId.Equals(Guid.Empty)) return BadRequest();
+        if (userId.Equals(Guid.Empty)) return Unauthorized();
         if (string.IsNullOrWhiteSpace(name)) return BadRequest();
-        return Ok(await _service.Create(userId, name));
+        return Ok(await _service.CreateAsync(userId, name));
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddTrack([FromHeader] Guid userId, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
+    [Route("/track")]
+    public async Task<ActionResult> AddTrack([FromHeader] Guid userId, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
     {
-        if (userId.Equals(Guid.Empty)) return BadRequest();
+        if (userId.Equals(Guid.Empty)) return Unauthorized();
         if (playlistId.Equals(Guid.Empty)) return BadRequest();
         if (trackId.Equals(Guid.Empty)) return BadRequest();
-        await _service.AddTrack(userId, playlistId, trackId);
+        await _service.AddTrackAsync(userId, playlistId, trackId);
         return Ok();
     }
     
     [HttpDelete]
-    public async Task<IActionResult> RemoveTrack([FromHeader] Guid userId, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
+    [Route("/track")]
+    public async Task<ActionResult> RemoveTrack([FromHeader] Guid userId, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
     {
-        if (userId.Equals(Guid.Empty)) return BadRequest();
+        if (userId.Equals(Guid.Empty)) return Unauthorized();
         if (playlistId.Equals(Guid.Empty)) return BadRequest();
         if (trackId.Equals(Guid.Empty)) return BadRequest();
-        await _service.RemoveTrack(userId, playlistId, trackId);
+        await _service.RemoveTrackAsync(userId, playlistId, trackId);
         return Ok();
     }
 }
