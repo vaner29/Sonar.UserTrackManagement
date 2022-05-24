@@ -2,7 +2,7 @@
 
 public interface IPlaylistApplicationService
 {
-    Task<Guid> Create(Guid userId, string name);
-    Task AddTrack(Guid userId, Guid playlistId, Guid trackId);
-    Task RemoveTrack(Guid userId, Guid playlistId, Guid trackId);
+    Task<Guid> CreateAsync(Guid userId, string name);
+    Task AddTrackAsync(Guid userId, Guid playlistId, Guid trackId);
+    Task RemoveTrackAsync(Guid userId, Guid playlistId, Guid trackId);
 }
