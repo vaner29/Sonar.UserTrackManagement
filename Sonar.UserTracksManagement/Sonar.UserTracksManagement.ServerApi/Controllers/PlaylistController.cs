@@ -17,8 +17,6 @@ public class PlaylistController : Controller
     [HttpPost]
     public async Task<ActionResult<Guid>> Create([FromHeader(Name = "Token")] string token, [FromQuery] string name)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
-        if (string.IsNullOrWhiteSpace(name)) return BadRequest();
         return Ok(await _service.CreateAsync(token, name));
     }
 
@@ -26,9 +24,6 @@ public class PlaylistController : Controller
     [Route("/track")]
     public async Task<ActionResult> AddTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
-        if (playlistId.Equals(Guid.Empty)) return BadRequest();
-        if (trackId.Equals(Guid.Empty)) return BadRequest();
         await _service.AddTrackAsync(token, playlistId, trackId);
         return Ok();
     }
@@ -37,9 +32,6 @@ public class PlaylistController : Controller
     [Route("/track")]
     public async Task<ActionResult> RemoveTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
     {
-        if (string.IsNullOrWhiteSpace(token)) return Unauthorized();
-        if (playlistId.Equals(Guid.Empty)) return BadRequest();
-        if (trackId.Equals(Guid.Empty)) return BadRequest();
         await _service.RemoveTrackAsync(token, playlistId, trackId);
         return Ok();
     }
