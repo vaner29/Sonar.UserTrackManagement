@@ -11,7 +11,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new ExceptionFilter());
 });
 builder.Services.AddDbContext<UserTracksManagementDatabaseContext>(opt =>
-    opt.UseSqlite(@"Filename=../Sonar.UserTracksManagement.Application/Database/UserTrackManagement"));
+    opt.UseSqlite($"Filename={builder.Configuration["DatabaseFileName"]}"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
