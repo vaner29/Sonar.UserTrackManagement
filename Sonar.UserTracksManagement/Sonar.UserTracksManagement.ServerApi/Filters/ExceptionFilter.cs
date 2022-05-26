@@ -17,6 +17,7 @@ public class ExceptionFilter : IExceptionFilter
                 NotFoundArgumentsException => (int) HttpStatusCode.NotFound,
                 UserAccessException => (int) HttpStatusCode.Forbidden,
                 UserAuthorizationException => (int) HttpStatusCode.Unauthorized,
+                PreconditionException => (int) HttpStatusCode.PreconditionFailed,
                 _ => (int) HttpStatusCode.InternalServerError
             }
         };
