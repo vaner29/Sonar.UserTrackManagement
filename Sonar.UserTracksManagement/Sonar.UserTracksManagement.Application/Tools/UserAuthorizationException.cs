@@ -1,4 +1,6 @@
-﻿namespace Sonar.UserTracksManagement.Application.Tools;
+﻿using System.Runtime.Serialization;
+
+namespace Sonar.UserTracksManagement.Application.Tools;
 
 public class UserAuthorizationException : Exception
 {
@@ -14,6 +16,11 @@ public class UserAuthorizationException : Exception
 
     public UserAuthorizationException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+    
+    public UserAuthorizationException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }

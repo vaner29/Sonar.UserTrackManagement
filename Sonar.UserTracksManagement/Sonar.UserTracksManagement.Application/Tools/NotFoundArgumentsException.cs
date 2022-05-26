@@ -1,4 +1,6 @@
-﻿namespace Sonar.UserTracksManagement.Application.Tools;
+﻿using System.Runtime.Serialization;
+
+namespace Sonar.UserTracksManagement.Application.Tools;
 
 public class NotFoundArgumentsException : Exception
 {
@@ -14,6 +16,11 @@ public class NotFoundArgumentsException : Exception
 
     public NotFoundArgumentsException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+    
+    public NotFoundArgumentsException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }

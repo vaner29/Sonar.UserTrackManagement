@@ -1,4 +1,6 @@
-﻿namespace Sonar.UserTracksManagement.Application.Tools;
+﻿using System.Runtime.Serialization;
+
+namespace Sonar.UserTracksManagement.Application.Tools;
 
 public class PreconditionException : Exception
 {
@@ -14,6 +16,11 @@ public class PreconditionException : Exception
 
     public PreconditionException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+    
+    public PreconditionException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }
