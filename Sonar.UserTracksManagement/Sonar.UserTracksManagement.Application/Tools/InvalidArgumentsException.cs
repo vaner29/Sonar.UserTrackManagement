@@ -1,4 +1,6 @@
-﻿namespace Sonar.UserTracksManagement.Application.Tools;
+﻿using System.Runtime.Serialization;
+
+namespace Sonar.UserTracksManagement.Application.Tools;
 
 public class InvalidArgumentsException : Exception
 {
@@ -14,6 +16,11 @@ public class InvalidArgumentsException : Exception
 
     public InvalidArgumentsException(string message, Exception innerException)
         : base(message, innerException)
+    {
+    }
+
+    public InvalidArgumentsException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
 }
