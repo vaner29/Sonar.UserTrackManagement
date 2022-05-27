@@ -10,9 +10,9 @@ public class PlaylistService : IPlaylistService
     }
 
 
-    public Playlist CreateNewPlaylist(Guid userId, string name)
+    public Playlist CreateNewPlaylist(User user, string name)
     {
-        return new Playlist(userId, name);
+        return new Playlist(user, name);
     }
 
     public bool CheckPlaylistForTrack(Playlist playlist, Track track)
