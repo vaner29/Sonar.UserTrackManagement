@@ -3,13 +3,11 @@
 public class Playlist
 {
     private readonly List<PlaylistTrack> _tracks;
-    private Playlist()
-    {
-    }
 
     public Playlist(User user, string name)
     {
         Id = Guid.NewGuid();
+        
         User = user;
         Name = name;
         _tracks = new List<PlaylistTrack>();
@@ -23,6 +21,11 @@ public class Playlist
     public void AddTrack(PlaylistTrack track)
     {
         _tracks.Add(track);
+    }
+
+    public void RemoveTrack(PlaylistTrack track)
+    {
+        _tracks.Remove(track);
     }
 
 }
