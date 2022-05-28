@@ -2,20 +2,18 @@
 
 public class Track
 {
-    private readonly List<Guid> _userIdWithAccess;
     private Track()
     {
     }
 
-    public Track(string name)
+    public Track(Guid ownerId, string name)
     {
         Id = Guid.NewGuid();
+        OwnerId = ownerId;
         Name = name;
-        _userIdWithAccess = new List<Guid>();
     }
 
     public Guid Id { get; private init; }
     public string Name { get; private set; }
-
-    public IReadOnlyList<Guid> UserIdWithAccess => _userIdWithAccess.AsReadOnly();
+    public Guid OwnerId { get; private init; }
 }
