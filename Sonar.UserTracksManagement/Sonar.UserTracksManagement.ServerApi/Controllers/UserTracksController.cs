@@ -35,6 +35,12 @@ public class UserTracksController : Controller
         return Ok(await _service.GetTrackAsync(token, trackId));
     }
     
+    [HttpDelete]
+    public async Task<ActionResult<TrackDto>> DeleteTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
+    {
+        return Ok(await _service.DeleteTrackAsync(token, trackId));
+    }
+    
     [HttpGet]
     [Route("/isEnoughAccess")]
     public async Task<ActionResult<bool>> CheckAccessToTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
