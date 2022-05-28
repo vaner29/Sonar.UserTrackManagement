@@ -4,17 +4,17 @@ public class Playlist
 {
     private readonly List<PlaylistTrack> _tracks;
 
-    public Playlist(User user, string name)
+    public Playlist(Guid userId, string name)
     {
         Id = Guid.NewGuid();
         
-        User = user;
+        UserId = userId;
         Name = name;
         _tracks = new List<PlaylistTrack>();
     }
 
     public Guid Id { get; private init; }
-    public User User { get; private init; }
+    public Guid UserId { get; private init; }
     public string Name { get; private set; }
     public IReadOnlyList<PlaylistTrack> Tracks => _tracks.AsReadOnly();
 

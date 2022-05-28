@@ -11,6 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Sonar.UserProfile\Sonar.UserProfile.ApiClient\Sonar.UserProfile.ApiClient.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-preview.4.22229.2" />
     </ItemGroup>
 
