@@ -7,7 +7,6 @@ public class Playlist
     public Playlist(Guid userId, string name)
     {
         Id = Guid.NewGuid();
-        
         UserId = userId;
         Name = name;
         _tracks = new List<PlaylistTrack>();
