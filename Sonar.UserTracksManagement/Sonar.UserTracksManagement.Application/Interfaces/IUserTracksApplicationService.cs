@@ -8,5 +8,5 @@ public interface IUserTracksApplicationService
     Task<bool> CheckAccessToTrackAsync(string token, Guid trackId);
     Task<IEnumerable<TrackDto>> GetAllTracksAsync(string token);
     Task<TrackDto> GetTrackAsync(string token, Guid trackId);
-    Task<TrackDto> DeleteTrackAsync(string token, Guid trackId);
+    Task DeleteTrackAsync(string token, Guid trackId);
 }

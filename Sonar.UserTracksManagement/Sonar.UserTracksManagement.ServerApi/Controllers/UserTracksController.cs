@@ -36,9 +36,10 @@ public class UserTracksController : Controller
     }
     
     [HttpDelete]
-    public async Task<ActionResult<TrackDto>> DeleteTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
+    public async Task<ActionResult> DeleteTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
     {
-        return Ok(await _service.DeleteTrackAsync(token, trackId));
+        await _service.DeleteTrackAsync(token, trackId);
+        return Ok();
     }
     
     [HttpGet]
