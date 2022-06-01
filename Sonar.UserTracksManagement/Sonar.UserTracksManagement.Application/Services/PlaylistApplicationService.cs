@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sonar.UserTracksManagement.Application.Database;
+using Sonar.UserTracksManagement.Application.Dto;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Tools;
 using Sonar.UserTracksManagement.Core.Entities;
@@ -74,7 +75,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         await _databaseContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Track>> GetTracksFromPlaylistAsync(string token, Guid playlistId)
+    public async Task<IEnumerable<TrackDto>> GetTracksFromPlaylistAsync(string token, Guid playlistId)
     {
         if (playlistId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
@@ -84,7 +85,11 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
             throw new UserAccessException("User doesn't have access to given playlist");
-        return _playlistService.GetTracksFromPlaylist(playlist);
+        return _playlistService.GetTracksFromPlaylist(playlist).Select(track => new TrackDto()
+        {
+            Id = track.Id,
+            Name = track.Name
+        });
     }
 
     public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token)
