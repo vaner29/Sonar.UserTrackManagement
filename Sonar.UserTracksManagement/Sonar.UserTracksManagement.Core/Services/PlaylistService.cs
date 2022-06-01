@@ -20,14 +20,18 @@ public class PlaylistService : IPlaylistService
         return playlist.Tracks.Any(item => item.Track.Id.Equals(track.Id));
     }
 
-    public void AddTrackToPlaylist(Playlist playlist, Track track)
+    public PlaylistTrack AddTrackToPlaylist(Playlist playlist, Track track)
     {
-        playlist.AddTrack(new PlaylistTrack((uint)playlist.Tracks.Count(), track));
+        var playlistTrack = new PlaylistTrack((uint)playlist.Tracks.Count(), track);
+        playlist.AddTrack(playlistTrack);
+        return playlistTrack;
     }
     
-    public void RemoveTrackFromPlaylist(Playlist playlist, Track track)
+    public PlaylistTrack RemoveTrackFromPlaylist(Playlist playlist, Track track)
     {
-        playlist.RemoveTrack(playlist.Tracks.First(item => item.Track.Id.Equals(track.Id)));
+        var playlistTrack = playlist.Tracks.First(item => item.Track.Id.Equals(track.Id));
+        playlist.RemoveTrack(playlistTrack);
+        return playlistTrack;
     }
 
     public List<Track> GetTracksFromPlaylist(Playlist playlist)

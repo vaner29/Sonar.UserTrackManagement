@@ -26,7 +26,10 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
         var user = await _authorizationService.GetUserAsync(token);
-        return _playlistService.CreateNewPlaylist(user.Id, name).Id;
+        var playlist = _playlistService.CreateNewPlaylist(user.Id, name);
+        await _databaseContext.Playlists.AddAsync(playlist);
+        await _databaseContext.SaveChangesAsync();
+        return playlist.Id;
     }
 
     public async Task AddTrackAsync(string token, Guid playlistId, Guid trackId)
@@ -44,7 +47,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new PreconditionException("User doesn't have access to given playlist");
         if (!_availabilityService.CheckTrackAvailability(user.Id, track))
             throw new PreconditionException("User doesn't have access to given track");
-        _playlistService.AddTrackToPlaylist(playlist, track);
+        var playlistTrack = _playlistService.AddTrackToPlaylist(playlist, track);
+        await _databaseContext.PlaylistTracks.AddAsync(playlistTrack);
+        await _databaseContext.SaveChangesAsync();
     }
 
     public async Task RemoveTrackAsync(string token, Guid playlistId, Guid trackId)
@@ -64,7 +69,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new PreconditionException("User doesn't have access to given track");
         if (playlist.Tracks.All(item => item.Track.Id.Equals(trackId)))
             throw new NotFoundArgumentsException("No track with given ID in the playlist");
-        _playlistService.RemoveTrackFromPlaylist(playlist, track);
+        var playlistTrack = _playlistService.RemoveTrackFromPlaylist(playlist, track);
+        _databaseContext.PlaylistTracks.Remove(playlistTrack);
+        await _databaseContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Track>> GetTracksFromPlaylistAsync(string token, Guid playlistId)
