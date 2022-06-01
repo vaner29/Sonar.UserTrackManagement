@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sonar.UserProfile.ApiClient;
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Tools;
 using Sonar.UserTracksManagement.Core.Entities;
 using Sonar.UserTracksManagement.Core.Interfaces;
-using Sonar.UserTracksManagement.Core.Services;
 
 namespace Sonar.UserTracksManagement.Application.Services;
 
@@ -64,7 +62,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new PreconditionException("User doesn't have access to given playlist");
         if (!_availabilityService.CheckTrackAvailability(user.Id, track))
             throw new PreconditionException("User doesn't have access to given track");
-        if (playlist.Tracks.All(item => item.Track.Id != trackId))
+        if (playlist.Tracks.All(item => item.Track.Id.Equals(trackId)))
             throw new NotFoundArgumentsException("No track with given ID in the playlist");
         _playlistService.RemoveTrackFromPlaylist(playlist, track);
     }
@@ -85,7 +83,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        return _databaseContext.Playlists.Where(playlist => playlist.UserId == user.Id);
+        return _databaseContext.Playlists.Where(playlist => playlist.UserId.Equals(user.Id));
 
     }
 }
