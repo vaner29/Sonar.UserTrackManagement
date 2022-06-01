@@ -29,4 +29,9 @@ public class PlaylistService : IPlaylistService
     {
         playlist.RemoveTrack(playlist.Tracks.First(item => item.Track.Id.Equals(track.Id)));
     }
+
+    public List<Track> GetTracksFromPlaylist(Playlist playlist)
+    {
+        return playlist.Tracks.Select(playlistTrack => playlistTrack.Track).ToList();
+    }
 }

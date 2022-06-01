@@ -3,6 +3,7 @@ using Sonar.UserProfile.ApiClient;
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Tools;
+using Sonar.UserTracksManagement.Core.Entities;
 using Sonar.UserTracksManagement.Core.Interfaces;
 using Sonar.UserTracksManagement.Core.Services;
 
@@ -54,5 +55,22 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (track == null)
             throw new NotFoundArgumentsException("Couldn't find track with given ID");
         _playlistService.RemoveTrackFromPlaylist(playlist, track);
+    }
+
+    public async Task<List<Track>> GetTracksFromPlaylistAsync(string token, Guid playlistId)
+    {
+        if (playlistId.Equals(Guid.Empty))
+            throw new InvalidArgumentsException("Guid can't be empty");
+        var user = await _authorizationService.GetUserAsync(token);
+        var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(item => item.Id.Equals(playlistId));
+        if (playlist == null)
+            throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
+        return _playlistService.GetTracksFromPlaylist(playlist);
+    }
+
+    public async Task<List<Playlist>> GetUserPlaylistsAsync(string token)
+    {
+        var user = await _authorizationService.GetUserAsync(token);
+        return _databaseContext.Playlists.Where(playlist => playlist.UserId == user.Id).ToList();
     }
 }
