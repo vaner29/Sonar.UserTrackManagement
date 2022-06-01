@@ -26,7 +26,10 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
         var user = await _authorizationService.GetUserAsync(token);
-        return _playlistService.CreateNewPlaylist(user.Id, name).Id;
+        var playlist = _playlistService.CreateNewPlaylist(user.Id, name);
+        await _databaseContext.Playlists.AddAsync(playlist);
+        await _databaseContext.SaveChangesAsync();
+        return playlist.Id;
     }
 
     public async Task AddTrackAsync(string token, Guid playlistId, Guid trackId)
