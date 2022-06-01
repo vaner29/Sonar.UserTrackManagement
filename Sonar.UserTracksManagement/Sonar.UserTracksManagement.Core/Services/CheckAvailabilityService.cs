@@ -5,8 +5,13 @@ namespace Sonar.UserTracksManagement.Core.Services;
 
 public class CheckAvailabilityService : ICheckAvailabilityService
 {
-    public bool CheckAvailability(Guid userId, Track track)
+    public bool CheckTrackAvailability(Guid userId, Track track)
     {
         return track.OwnerId == userId;
+    }
+
+    public bool CheckPlaylistAvailability(Guid userId, Playlist playlist)
+    {
+        return playlist.UserId == userId;
     }
 }

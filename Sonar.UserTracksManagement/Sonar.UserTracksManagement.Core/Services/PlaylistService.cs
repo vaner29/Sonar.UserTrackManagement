@@ -10,10 +10,10 @@ public class PlaylistService : IPlaylistService
     }
 
 
-    // public Playlist CreateNewPlaylist(User user, string name)
-    // {
-    //     return new Playlist(user, name);
-    // }
+    public Playlist CreateNewPlaylist(Guid userId, string name)
+    {
+         return new Playlist(userId, name);
+    }
 
     public bool CheckPlaylistForTrack(Playlist playlist, Track track)
     {
@@ -28,5 +28,10 @@ public class PlaylistService : IPlaylistService
     public void RemoveTrackFromPlaylist(Playlist playlist, Track track)
     {
         playlist.RemoveTrack(playlist.Tracks.First(item => item.Track.Id.Equals(track.Id)));
+    }
+
+    public List<Track> GetTracksFromPlaylist(Playlist playlist)
+    {
+        return playlist.Tracks.Select(playlistTrack => playlistTrack.Track).ToList();
     }
 }
