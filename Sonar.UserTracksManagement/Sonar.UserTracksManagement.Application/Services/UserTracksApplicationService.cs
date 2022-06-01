@@ -39,7 +39,12 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        return _context.Tracks.FirstOrDefault(item => item.OwnerId == user.Id) is not null;
+        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id == trackId);
+        if (track is null)
+        {
+            throw new InvalidArgumentsException("track with given id doesn't exists");
+        }
+        return _checkAvailabilityService.CheckTrackAvailability(user.Id, track);
     }
 
     public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token)
@@ -56,12 +61,17 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<TrackDto> GetTrackAsync(string token, Guid trackId)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.OwnerId == user.Id);
+        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id == trackId);
         if (track is null)
         {
-            throw new InvalidArgumentsException("");
+            throw new InvalidArgumentsException("track with given id doesn't exists");
         }
 
+        if (_checkAvailabilityService.CheckTrackAvailability(user.Id, track))
+        {
+            throw new AvailabilityException("this user has no this track");
+        }
+        
         return new TrackDto
         {
             Id = track.Id,
@@ -72,10 +82,15 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task DeleteTrackAsync(string token, Guid trackId)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.OwnerId == user.Id);
+        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id == trackId);
         if (track is null)
         {
-            throw new InvalidArgumentsException();
+            throw new InvalidArgumentsException("track with given id doesn't exists");
+        }
+        
+        if (_checkAvailabilityService.CheckTrackAvailability(user.Id, track))
+        {
+            throw new AvailabilityException("this user has no this track");
         }
 
         _context.Tracks.Remove(track);
