@@ -24,9 +24,9 @@ public class UserTracksController : Controller
 
     [HttpGet]
     [Route("/all")]
-    public async Task<ActionResult<IEnumerable<TrackDto>>> GetAllTracks([FromHeader(Name = "Token")] string token)
+    public async Task<ActionResult<IEnumerable<TrackDto>>> GetAllUserTracks([FromHeader(Name = "Token")] string token)
     {
-        return Ok(await _service.GetAllTracksAsync(token));
+        return Ok(await _service.GetAllUserTracksAsync(token));
     }
     
     [HttpGet]
@@ -43,7 +43,7 @@ public class UserTracksController : Controller
     }
     
     [HttpGet]
-    [Route("/isEnoughAccess")]
+    [Route("/is-enough-access")]
     public async Task<ActionResult<bool>> CheckAccessToTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
     {
         return Ok(await _service.CheckAccessToTrackAsync(token, trackId));

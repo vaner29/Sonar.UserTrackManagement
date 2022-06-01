@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Sonar.UserTracksManagement.Application.Dto;
 using Sonar.UserTracksManagement.Application.Interfaces;
+using Sonar.UserTracksManagement.Core.Entities;
 
 namespace ServerApi.Controllers;
 
@@ -34,5 +36,18 @@ public class PlaylistController : Controller
     {
         await _service.RemoveTrackAsync(token, playlistId, trackId);
         return Ok();
+    }
+    
+    [HttpGet]
+    [Route("/all-tracks")]
+    public async Task<ActionResult<IEnumerable<TrackDto>>> GetAllTracksOfPlaylist([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId)
+    {
+        return Ok(await _service.GetTracksFromPlaylistAsync(token, playlistId));
+    }
+    [HttpGet]
+    [Route("/all")]
+    public async Task<ActionResult<IEnumerable<Playlist>>> GetAllPlaylist([FromHeader(Name = "Token")] string token)
+    {
+        return Ok(await _service.GetUserPlaylistsAsync(token));
     }
 }
