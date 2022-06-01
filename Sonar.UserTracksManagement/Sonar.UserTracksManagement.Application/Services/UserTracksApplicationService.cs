@@ -13,7 +13,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     private readonly UserTracksManagementDatabaseContext _context;
     private readonly IAuthorizationService _authorizationService;
     private readonly IUserTrackService _userTracksService;
-    private ICheckAvailabilityService _checkAvailabilityService;
+    private readonly ICheckAvailabilityService _checkAvailabilityService;
     public UserTracksApplicationService(
         IAuthorizationService trackManagerService, 
         UserTracksManagementDatabaseContext context, 
