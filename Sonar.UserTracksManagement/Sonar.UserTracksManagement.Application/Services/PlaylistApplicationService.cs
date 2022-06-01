@@ -44,9 +44,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (track == null)
             throw new NotFoundArgumentsException("Couldn't find track with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
-            throw new PreconditionException("User doesn't have access to given playlist");
+            throw new UserAccessException("User doesn't have access to given playlist");
         if (!_availabilityService.CheckTrackAvailability(user.Id, track))
-            throw new PreconditionException("User doesn't have access to given track");
+            throw new UserAccessException("User doesn't have access to given track");
         var playlistTrack = _playlistService.AddTrackToPlaylist(playlist, track);
         await _databaseContext.PlaylistTracks.AddAsync(playlistTrack);
         await _databaseContext.SaveChangesAsync();
@@ -64,9 +64,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (track == null)
             throw new NotFoundArgumentsException("Couldn't find track with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
-            throw new PreconditionException("User doesn't have access to given playlist");
+            throw new UserAccessException("User doesn't have access to given playlist");
         if (!_availabilityService.CheckTrackAvailability(user.Id, track))
-            throw new PreconditionException("User doesn't have access to given track");
+            throw new UserAccessException("User doesn't have access to given track");
         if (playlist.Tracks.All(item => item.Track.Id.Equals(trackId)))
             throw new NotFoundArgumentsException("No track with given ID in the playlist");
         var playlistTrack = _playlistService.RemoveTrackFromPlaylist(playlist, track);
@@ -83,7 +83,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (playlist == null)
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
-            throw new PreconditionException("User doesn't have access to given playlist");
+            throw new UserAccessException("User doesn't have access to given playlist");
         return _playlistService.GetTracksFromPlaylist(playlist);
     }
 
