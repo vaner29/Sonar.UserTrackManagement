@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sonar.UserProfile.ApiClient;
+
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Dto;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Tools;
-using Sonar.UserTracksManagement.Core.Entities;
 using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Services;
@@ -69,7 +68,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
         if (_checkAvailabilityService.CheckTrackAvailability(user.Id, track))
         {
-            throw new AvailabilityException("this user has no this track");
+            throw new UserAccessException("this user has no this track");
         }
         
         return new TrackDto
@@ -90,7 +89,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         
         if (_checkAvailabilityService.CheckTrackAvailability(user.Id, track))
         {
-            throw new AvailabilityException("this user has no this track");
+            throw new UserAccessException("this user has no this track");
         }
 
         _context.Tracks.Remove(track);
