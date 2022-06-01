@@ -54,10 +54,12 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
         if (track == null)
             throw new NotFoundArgumentsException("Couldn't find track with given ID");
+        if (playlist.Tracks.All(item => item.Track.Id != trackId))
+            throw new NotFoundArgumentsException("No track with given ID in the playlist");
         _playlistService.RemoveTrackFromPlaylist(playlist, track);
     }
 
-    public async Task<List<Track>> GetTracksFromPlaylistAsync(string token, Guid playlistId)
+    public async Task<IEnumerable<Track>> GetTracksFromPlaylistAsync(string token, Guid playlistId)
     {
         if (playlistId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
@@ -68,9 +70,10 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         return _playlistService.GetTracksFromPlaylist(playlist);
     }
 
-    public async Task<List<Playlist>> GetUserPlaylistsAsync(string token)
+    public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        return _databaseContext.Playlists.Where(playlist => playlist.UserId == user.Id).ToList();
+        return _databaseContext.Playlists.Where(playlist => playlist.UserId == user.Id);
+
     }
 }
