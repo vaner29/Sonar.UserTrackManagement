@@ -28,6 +28,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
     public async Task<Guid> AddTrackAsync(string token, string name)
     {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
         var user = await _authorizationService.GetUserAsync(token);
         var track = _userTracksService.AddNewTrack(user.Id, name);
         await _context.Tracks.AddAsync(track);
@@ -37,6 +39,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
     public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId)
     {
+        if (trackId.Equals(Guid.Empty))
+            throw new InvalidArgumentsException("Guid can't be empty");
         var user = await _authorizationService.GetUserAsync(token);
         var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
         if (track is null)
@@ -59,6 +63,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
     public async Task<TrackDto> GetTrackAsync(string token, Guid trackId)
     {
+        if (trackId.Equals(Guid.Empty))
+            throw new InvalidArgumentsException("Guid can't be empty");
         var user = await _authorizationService.GetUserAsync(token);
         var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
         if (track is null)
@@ -80,6 +86,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
     public async Task DeleteTrackAsync(string token, Guid trackId)
     {
+        if (trackId.Equals(Guid.Empty))
+            throw new InvalidArgumentsException("Guid can't be empty");
         var user = await _authorizationService.GetUserAsync(token);
         var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
         if (track is null)
