@@ -38,7 +38,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id == trackId);
+        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
         if (track is null)
         {
             throw new InvalidArgumentsException("track with given id doesn't exists");
@@ -49,7 +49,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        var tracks = _context.Tracks.Where(item => item.OwnerId == user.Id).ToList();
+        var tracks = _context.Tracks.Where(item => item.OwnerId.Equals(user.Id)).ToList();
         return tracks.Select(item => new TrackDto()
         {
             Id = item.Id,
@@ -60,7 +60,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<TrackDto> GetTrackAsync(string token, Guid trackId)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id == trackId);
+        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
         if (track is null)
         {
             throw new InvalidArgumentsException("track with given id doesn't exists");
@@ -81,7 +81,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task DeleteTrackAsync(string token, Guid trackId)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id == trackId);
+        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
         if (track is null)
         {
             throw new InvalidArgumentsException("track with given id doesn't exists");

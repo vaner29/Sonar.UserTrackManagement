@@ -7,11 +7,11 @@ public class CheckAvailabilityService : ICheckAvailabilityService
 {
     public bool CheckTrackAvailability(Guid userId, Track track)
     {
-        return track.OwnerId == userId;
+        return track.OwnerId.Equals(userId);
     }
 
     public bool CheckPlaylistAvailability(Guid userId, Playlist playlist)
     {
-        return playlist.UserId == userId;
+        return playlist.UserId.Equals(userId);
     }
 }
