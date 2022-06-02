@@ -40,9 +40,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = await _authorizationService.GetUserAsync(token);
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(item => item.Id.Equals(playlistId));
         var track = await _databaseContext.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
-        if (playlist == null)
+        if (playlist is null)
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
-        if (track == null)
+        if (track is null)
             throw new NotFoundArgumentsException("Couldn't find track with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
             throw new UserAccessException("User doesn't have access to given playlist");
@@ -60,9 +60,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = await _authorizationService.GetUserAsync(token);
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(item => item.Id.Equals(playlistId));
         var track = await _databaseContext.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
-        if (playlist == null)
+        if (playlist is null)
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
-        if (track == null)
+        if (track is null)
             throw new NotFoundArgumentsException("Couldn't find track with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
             throw new UserAccessException("User doesn't have access to given playlist");
@@ -81,7 +81,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new InvalidArgumentsException("Guid can't be empty");
         var user = await _authorizationService.GetUserAsync(token);
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(item => item.Id.Equals(playlistId));
-        if (playlist == null)
+        if (playlist is null)
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
         if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
             throw new UserAccessException("User doesn't have access to given playlist");
