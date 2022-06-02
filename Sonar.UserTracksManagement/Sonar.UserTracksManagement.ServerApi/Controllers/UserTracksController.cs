@@ -23,7 +23,7 @@ public class UserTracksController : Controller
 
 
     [HttpGet]
-    [Route("/all")]
+    [Route("all")]
     public async Task<ActionResult<IEnumerable<TrackDto>>> GetAllUserTracks([FromHeader(Name = "Token")] string token)
     {
         return Ok(await _service.GetAllUserTracksAsync(token));
@@ -43,7 +43,7 @@ public class UserTracksController : Controller
     }
     
     [HttpGet]
-    [Route("/is-enough-access")]
+    [Route("is-enough-access")]
     public async Task<ActionResult<bool>> CheckAccessToTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid trackId)
     {
         return Ok(await _service.CheckAccessToTrackAsync(token, trackId));
