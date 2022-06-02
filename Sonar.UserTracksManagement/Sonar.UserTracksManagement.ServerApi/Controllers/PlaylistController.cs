@@ -6,7 +6,7 @@ using Sonar.UserTracksManagement.Core.Entities;
 namespace ServerApi.Controllers;
 
 [ApiController]
-[Route("/playlist")]
+[Route("playlist")]
 public class PlaylistController : Controller
 {
     private readonly IPlaylistApplicationService _service;
@@ -23,7 +23,7 @@ public class PlaylistController : Controller
     }
 
     [HttpPost]
-    [Route("/track")]
+    [Route("track")]
     public async Task<ActionResult> AddTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
     {
         await _service.AddTrackAsync(token, playlistId, trackId);
@@ -31,7 +31,7 @@ public class PlaylistController : Controller
     }
     
     [HttpDelete]
-    [Route("/track")]
+    [Route("track")]
     public async Task<ActionResult> RemoveTrack([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId, [FromQuery] Guid trackId)
     {
         await _service.RemoveTrackAsync(token, playlistId, trackId);
@@ -39,13 +39,13 @@ public class PlaylistController : Controller
     }
     
     [HttpGet]
-    [Route("/all-tracks")]
+    [Route("all-tracks")]
     public async Task<ActionResult<IEnumerable<TrackDto>>> GetAllTracksOfPlaylist([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId)
     {
         return Ok(await _service.GetTracksFromPlaylistAsync(token, playlistId));
     }
     [HttpGet]
-    [Route("/all")]
+    [Route("all")]
     public async Task<ActionResult<IEnumerable<Playlist>>> GetAllPlaylist([FromHeader(Name = "Token")] string token)
     {
         return Ok(await _service.GetUserPlaylistsAsync(token));
