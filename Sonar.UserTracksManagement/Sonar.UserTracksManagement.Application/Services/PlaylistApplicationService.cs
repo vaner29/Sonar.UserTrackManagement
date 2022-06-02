@@ -95,7 +95,19 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token)
     {
         var user = await _authorizationService.GetUserAsync(token);
-        return _databaseContext.Playlists.Where(playlist => playlist.UserId.Equals(user.Id));
+        return _databaseContext.Playlists
+            .Where(playlist => _availabilityService
+                .CheckPlaylistAvailability(user.Id, playlist));
 
+    }
+
+    public async Task<Playlist> GetUserPlaylistAsync(string token, Guid playlistId)
+    {
+        var user = await _authorizationService.GetUserAsync(token);
+        var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(p => p.Id.Equals(playlistId));
+        if (playlist == null) throw new NotFoundArgumentsException("Couldn't find playlist with given ID");
+        if (!_availabilityService.CheckPlaylistAvailability(user.Id, playlist))
+            throw new UserAccessException("User doesn't have access to given playlist");
+        return playlist;
     }
 }
