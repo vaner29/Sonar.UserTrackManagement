@@ -44,10 +44,17 @@ public class PlaylistController : Controller
     {
         return Ok(await _service.GetTracksFromPlaylistAsync(token, playlistId));
     }
+    
     [HttpGet]
     [Route("all")]
     public async Task<ActionResult<IEnumerable<Playlist>>> GetAllPlaylist([FromHeader(Name = "Token")] string token)
     {
         return Ok(await _service.GetUserPlaylistsAsync(token));
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<Playlist>> GetAllPlaylist([FromHeader(Name = "Token")] string token, [FromQuery] Guid playlistId)
+    {
+        return Ok(await _service.GetUserPlaylistAsync(token, playlistId));
     }
 }
