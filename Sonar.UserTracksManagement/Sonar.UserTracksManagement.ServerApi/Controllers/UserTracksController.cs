@@ -5,7 +5,7 @@ using Sonar.UserTracksManagement.Application.Interfaces;
 namespace ServerApi.Controllers;
 
 [ApiController]
-[Route("tracks")]
+[Route("/tracks")]
 public class UserTracksController : Controller
 {
     private readonly IUserTracksApplicationService _service;

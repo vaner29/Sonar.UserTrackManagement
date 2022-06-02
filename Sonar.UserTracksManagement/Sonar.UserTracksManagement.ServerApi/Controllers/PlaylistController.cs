@@ -6,7 +6,7 @@ using Sonar.UserTracksManagement.Core.Entities;
 namespace ServerApi.Controllers;
 
 [ApiController]
-[Route("playlist")]
+[Route("/playlist")]
 public class PlaylistController : Controller
 {
     private readonly IPlaylistApplicationService _service;
