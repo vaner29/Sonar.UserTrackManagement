@@ -22,7 +22,7 @@ public class PlaylistService : IPlaylistService
 
     public PlaylistTrack AddTrackToPlaylist(Playlist playlist, Track track)
     {
-        var playlistTrack = new PlaylistTrack((uint)playlist.Tracks.Count(), track);
+        var playlistTrack = new PlaylistTrack((uint)playlist.Tracks.Count, track);
         playlist.AddTrack(playlistTrack);
         return playlistTrack;
     }
