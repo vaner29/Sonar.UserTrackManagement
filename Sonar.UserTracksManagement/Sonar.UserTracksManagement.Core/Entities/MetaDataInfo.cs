@@ -1,8 +1,8 @@
 ﻿namespace Sonar.UserTracksManagement.Core.Entities;
 
-public class Info
+public class MetaDataInfo
 {
-    public Info(AccessType accessType)
+    public MetaDataInfo(AccessType accessType)
     {
         AccessType = accessType;
     }

@@ -11,10 +11,10 @@ public class Track
         Id = Guid.NewGuid();
         OwnerId = ownerId;
         Name = name;
-        TrackInfo = new Info(AccessType.Private);
+        TrackMetaDataInfo = new MetaDataInfo(AccessType.Private);
     }
     
-    public Info TrackInfo { get; set; }
+    public MetaDataInfo TrackMetaDataInfo { get; set; }
     public Guid Id { get; private init; }
     public string Name { get; private set; }
     public Guid OwnerId { get; private init; }
