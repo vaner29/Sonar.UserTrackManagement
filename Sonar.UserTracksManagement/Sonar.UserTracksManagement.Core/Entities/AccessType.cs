@@ -2,7 +2,7 @@
 
 public enum AccessType
 {
-    Private,
+    Public = 1,
     OnlyFans,
-    Public
+    Private
 }
