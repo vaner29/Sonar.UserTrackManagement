@@ -10,8 +10,10 @@ public class Playlist
         UserId = userId;
         Name = name;
         _tracks = new List<PlaylistTrack>();
+        PlaylistMetaDataInfo = new MetaDataInfo(AccessType.Private); // TODO: track access level implementation
     }
 
+    public MetaDataInfo PlaylistMetaDataInfo { get; private init; }
     public Guid Id { get; private init; }
     public Guid UserId { get; private init; }
     public string Name { get; private set; }
