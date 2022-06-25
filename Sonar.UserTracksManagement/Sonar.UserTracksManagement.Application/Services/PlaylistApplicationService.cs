@@ -116,8 +116,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     {
         var user = await _authorizationService.GetUserAsync(token, cancellationToken);
         return _databaseContext.Playlists
+            .AsEnumerable()
             .Where(playlist => _availabilityService
-                .CheckPlaylistAvailability(user.Id, playlist)).AsEnumerable();
+                .CheckPlaylistAvailability(user.Id, playlist));
 
     }
 

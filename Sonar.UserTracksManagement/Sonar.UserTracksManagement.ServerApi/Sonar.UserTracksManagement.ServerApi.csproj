@@ -14,6 +14,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Sonar.UserTracksManagement.Application\Sonar.UserTracksManagement.Application.csproj" />
+        <ProjectReference Include="..\Sonar.UserTracksManagement.ServiceFaker\Sonar.UserTracksManagement.ServiceFaker.csproj" />
     </ItemGroup>
 
 </Project>
