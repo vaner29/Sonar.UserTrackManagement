@@ -1,4 +1,6 @@
-﻿using Sonar.UserProfile.ApiClient;
+﻿using Sonar.UserProfile.ApiClient.Dto;
+using Sonar.UserProfile.ApiClient.Interfaces;
+using Sonar.UserProfile.ApiClient.Tools;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Tools;
 
@@ -12,14 +14,14 @@ public class AuthorizationService : IAuthorizationService
         _apiClient = apiClient;
     }
 
-    public async Task<UserGetDto> GetUserAsync(string token)
+    public async Task<UserDto> GetUserAsync(string token, CancellationToken cancellationToken)
     {
         try
         {
-            var userDto = await _apiClient.GetAsync(token);
+            var userDto = await _apiClient.GetAsync(token, cancellationToken);
             return userDto;
         }
-        catch (ApiException e)
+        catch (ApiClientException e)
         {
             throw new UserAuthorizationException(e.Message);
         }

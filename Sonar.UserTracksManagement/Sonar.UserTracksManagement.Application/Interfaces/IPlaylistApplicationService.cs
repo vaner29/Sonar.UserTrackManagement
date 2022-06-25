@@ -5,12 +5,12 @@ namespace Sonar.UserTracksManagement.Application.Interfaces;
 
 public interface IPlaylistApplicationService
 {
-    Task<Guid> CreateAsync(string token, string name);
-    Task AddTrackAsync(string token, Guid playlistId, Guid trackId);
-    Task RemoveTrackAsync(string token, Guid playlistId, Guid trackId);
-    Task<IEnumerable<TrackDto>> GetTracksFromPlaylistAsync(string token, Guid playlistId);
-    Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token);
-    Task<Playlist> GetUserPlaylistAsync(string token, Guid playlistId);
+    Task<Guid> CreateAsync(string token, string name, CancellationToken cancellationToken);
+    Task AddTrackAsync(string token, Guid playlistId, Guid trackId, CancellationToken cancellationToken);
+    Task RemoveTrackAsync(string token, Guid playlistId, Guid trackId, CancellationToken cancellationToken);
+    Task<IEnumerable<TrackDto>> GetTracksFromPlaylistAsync(string token, Guid playlistId, CancellationToken cancellationToken);
+    Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token, CancellationToken cancellationToken);
+    Task<Playlist> GetUserPlaylistAsync(string token, Guid playlistId, CancellationToken cancellationToken);
 
 
 }

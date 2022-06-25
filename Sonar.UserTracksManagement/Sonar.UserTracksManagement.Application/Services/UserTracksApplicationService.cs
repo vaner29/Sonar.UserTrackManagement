@@ -26,23 +26,24 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         _checkAvailabilityService = checkAvailabilityService;
     }
 
-    public async Task<Guid> AddTrackAsync(string token, string name)
+    public async Task<Guid> AddTrackAsync(string token, string name, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
-        var user = await _authorizationService.GetUserAsync(token);
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
         var track = _userTracksService.AddNewTrack(user.Id, name);
-        await _context.Tracks.AddAsync(track);
-        await _context.SaveChangesAsync();
+        await _context.Tracks.AddAsync(track, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         return track.Id;
     }
 
-    public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId)
+    public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
     {
         if (trackId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
-        var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+        var track = await _context.Tracks.FirstOrDefaultAsync(
+            item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
         if (track is null)
         {
             throw new InvalidArgumentsException("track with given id doesn't exists");
@@ -50,9 +51,9 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         return _checkAvailabilityService.CheckTrackAvailability(user.Id, track);
     }
 
-    public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token)
+    public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token, CancellationToken cancellationToken)
     {
-        var user = await _authorizationService.GetUserAsync(token);
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
         var tracks = _context.Tracks.Where(item => item.OwnerId.Equals(user.Id)).ToList();
         return tracks.Select(item => new TrackDto()
         {
@@ -61,12 +62,13 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         });
     }
 
-    public async Task<TrackDto> GetTrackAsync(string token, Guid trackId)
+    public async Task<TrackDto> GetTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
     {
         if (trackId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
-        var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+        var track = await _context.Tracks.FirstOrDefaultAsync(
+            item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
         if (track is null)
         {
             throw new InvalidArgumentsException("track with given id doesn't exists");
@@ -84,12 +86,13 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         };
     }
 
-    public async Task DeleteTrackAsync(string token, Guid trackId)
+    public async Task DeleteTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
     {
         if (trackId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
-        var user = await _authorizationService.GetUserAsync(token);
-        var track = await _context.Tracks.FirstOrDefaultAsync(item => item.Id.Equals(trackId));
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+        var track = await _context.Tracks.FirstOrDefaultAsync(
+            item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
         if (track is null)
         {
             throw new InvalidArgumentsException("track with given id doesn't exists");
@@ -101,6 +104,6 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         }
 
         _context.Tracks.Remove(track);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

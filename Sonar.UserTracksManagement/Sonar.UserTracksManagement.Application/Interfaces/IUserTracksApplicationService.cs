@@ -4,9 +4,9 @@ namespace Sonar.UserTracksManagement.Application.Interfaces;
 
 public interface IUserTracksApplicationService
 {
-    Task<Guid> AddTrackAsync(string token, string name);
-    Task<bool> CheckAccessToTrackAsync(string token, Guid trackId);
-    Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token);
-    Task<TrackDto> GetTrackAsync(string token, Guid trackId);
-    Task DeleteTrackAsync(string token, Guid trackId);
+    Task<Guid> AddTrackAsync(string token, string name, CancellationToken cancellationToken);
+    Task<bool> CheckAccessToTrackAsync(string token, Guid trackId, CancellationToken cancellationToken);
+    Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token, CancellationToken cancellationToken);
+    Task<TrackDto> GetTrackAsync(string token, Guid trackId, CancellationToken cancellationToken);
+    Task DeleteTrackAsync(string token, Guid trackId, CancellationToken cancellationToken);
 }
