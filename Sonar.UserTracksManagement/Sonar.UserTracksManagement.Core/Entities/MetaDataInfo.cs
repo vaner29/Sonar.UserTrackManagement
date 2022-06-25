@@ -12,7 +12,7 @@ public class MetaDataInfo
     
     public Guid Id { get; private set; }
     public AccessType AccessType { get; set; }
-    public IReadOnlyList<Tag> Tags => _tags.AsReadOnly();
+    public IReadOnlyCollection<Tag> Tags => _tags.AsReadOnly();
 
     public void AddTag(Tag tag)
     {
