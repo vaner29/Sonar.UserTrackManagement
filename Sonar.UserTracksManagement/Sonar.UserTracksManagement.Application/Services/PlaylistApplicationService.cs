@@ -33,10 +33,13 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
+        
         var user = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var playlist = _playlistService.CreateNewPlaylist(user.Id, name);
+        var playlist = _playlistService.CreateNewPlaylist(user.UserId, name);
+        
         await _databaseContext.Playlists.AddAsync(playlist, cancellationToken);
         await _databaseContext.SaveChangesAsync(cancellationToken);
+        
         return playlist.Id;
     }
 
@@ -45,9 +48,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (playlistId.Equals(Guid.Empty) || trackId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
         
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
 
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(item 
             => item.Id.Equals(playlistId), cancellationToken: cancellationToken);
@@ -74,10 +75,8 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (playlistId.Equals(Guid.Empty) || trackId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
         
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(item 
             => item.Id.Equals(playlistId), cancellationToken: cancellationToken);
         var track = await _databaseContext.Tracks.FirstOrDefaultAsync(item 
@@ -93,6 +92,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             throw new UserAccessException("User doesn't have access to given track");
         if (playlist.Tracks.All(item => item.Track.Id.Equals(trackId)))
             throw new NotFoundArgumentsException("No track with given ID in the playlist");
+        
         var playlistTrack = _playlistService.RemoveTrackFromPlaylist(playlist, track);
         
         _databaseContext.PlaylistTracks.Remove(playlistTrack);
@@ -107,10 +107,8 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         if (playlistId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
         
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(
             item => item.Id.Equals(playlistId), cancellationToken: cancellationToken);
         
@@ -128,10 +126,8 @@ public class PlaylistApplicationService : IPlaylistApplicationService
 
     public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token, CancellationToken cancellationToken)
     {
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         return _databaseContext.Playlists
             .AsEnumerable()
             .Where(playlist => _availabilityService
@@ -141,10 +137,8 @@ public class PlaylistApplicationService : IPlaylistApplicationService
 
     public async Task<Playlist> GetUserPlaylistAsync(string token, Guid playlistId, CancellationToken cancellationToken)
     {
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         var playlist = await _databaseContext.Playlists.FirstOrDefaultAsync(
             p => p.Id.Equals(playlistId), cancellationToken: cancellationToken);
         

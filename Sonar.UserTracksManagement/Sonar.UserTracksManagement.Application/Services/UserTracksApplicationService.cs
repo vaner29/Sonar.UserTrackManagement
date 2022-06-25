@@ -35,8 +35,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
         
-        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var track = _userTracksService.AddNewTrack(user.Id, name);
+        var userId = await _authorizationService.GetUserIdAsync(token, cancellationToken);
+        var track = _userTracksService.AddNewTrack(userId, name);
         
         await _context.Tracks.AddAsync(track, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
@@ -48,11 +48,9 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     {
         if (trackId.Equals(Guid.Empty))
             throw new InvalidArgumentsException("Guid can't be empty");
-        
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         var track = await _context.Tracks.FirstOrDefaultAsync(
             item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
 
@@ -66,8 +64,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
     public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token, CancellationToken cancellationToken)
     {
-        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var tracks = _context.Tracks.Where(item => item.OwnerId.Equals(user.Id)).ToList();
+        var userId = await _authorizationService.GetUserIdAsync(token, cancellationToken);
+        var tracks = _context.Tracks.Where(item => item.OwnerId.Equals(userId)).ToList();
         
         return tracks.Select(item => new TrackDto()
         {
@@ -83,10 +81,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
             throw new InvalidArgumentsException("Guid can't be empty");   
         }
 
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         var track = await _context.Tracks.FirstOrDefaultAsync(
             item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
         
@@ -114,10 +110,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
             throw new InvalidArgumentsException("Guid can't be empty");   
         }
         
-        var userDto = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var friends = await _apiClient.GetFriendsAsync(token, cancellationToken);
-        var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
-        
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
         var track = await _context.Tracks.FirstOrDefaultAsync(
             item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
         
