@@ -1,9 +1,9 @@
-﻿namespace Sonar.UserTracksManagement.Core.Entities;
+﻿namespace Sonar.UserTracksManagement.Core.Interfaces;
 
 public class User
 {
     private List<Guid> _friendsIds;
-    
+
     public User(Guid userId, string email, List<Guid> friendsIds)
     {
         UserId = userId;
@@ -15,4 +15,4 @@ public class User
     public string Email { get; private set; }
 
     public IEnumerable<Guid> Friends => _friendsIds;
-}
+} 

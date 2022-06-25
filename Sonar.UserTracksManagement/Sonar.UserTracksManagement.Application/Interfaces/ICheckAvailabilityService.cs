@@ -1,6 +1,7 @@
 ﻿using Sonar.UserTracksManagement.Core.Entities;
+using Sonar.UserTracksManagement.Core.Interfaces;
 
-namespace Sonar.UserTracksManagement.Core.Interfaces;
+namespace Sonar.UserTracksManagement.Application.Interfaces;
 
 public interface ICheckAvailabilityService
 {

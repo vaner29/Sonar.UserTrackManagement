@@ -20,6 +20,8 @@ builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IUserTrackService, UserTrackService>();
 builder.Services.AddScoped<IUserApiClient, UserApiClient>(provider =>
     new UserApiClient("https://localhost:7062", provider.GetRequiredService<HttpClient>()));
+builder.Services.AddScoped<IRelationshipApiClient, RelationshipApiClient>(provider =>
+    new RelationshipApiClient("https://localhost:7062", provider.GetRequiredService<HttpClient>()));
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(new ExceptionFilter());
