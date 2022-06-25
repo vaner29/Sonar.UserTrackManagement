@@ -7,12 +7,14 @@ using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Services;
 using Sonar.UserTracksManagement.Core.Interfaces;
 using Sonar.UserTracksManagement.Core.Services;
+using Sonar.UserTracksManagement.ServiceFaker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<HttpClient>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
+// builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
 builder.Services.AddScoped<IPlaylistApplicationService, PlaylistApplicationService>();
 builder.Services.AddScoped<IUserTracksApplicationService, UserTracksApplicationService>();
 builder.Services.AddScoped<ICheckAvailabilityService, CheckAvailabilityService>();
