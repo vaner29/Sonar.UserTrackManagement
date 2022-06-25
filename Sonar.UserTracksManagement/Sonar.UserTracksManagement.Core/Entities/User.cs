@@ -1,4 +1,4 @@
-﻿namespace Sonar.UserTracksManagement.Core.Interfaces;
+﻿namespace Sonar.UserTracksManagement.Core.Entities;
 
 public class User
 {
