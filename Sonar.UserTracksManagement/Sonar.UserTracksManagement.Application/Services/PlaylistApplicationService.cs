@@ -133,7 +133,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = new User(userDto.Id, userDto.Email, friends.Select(item => item.Id).ToList());
         
         return _databaseContext.Playlists
+            .AsEnumerable()
             .Where(playlist => _availabilityService
+                .CheckPlaylistAvailability(user.Id, playlist));
                 .CheckPlaylistAvailability(user, playlist)).AsEnumerable();
 
     }
