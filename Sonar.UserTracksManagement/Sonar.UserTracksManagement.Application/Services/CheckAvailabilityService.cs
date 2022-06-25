@@ -13,16 +13,21 @@ public class CheckAvailabilityService : ICheckAvailabilityService
         _apiClient = apiClient;
     }
 
-    public bool CheckTrackAvailability(User user, Track track)
+    public async Task<bool> CheckTrackAvailability(string token, User user, Track track, CancellationToken cancellationToken)
     {
         return track.TrackMetaDataInfo.AccessType switch
         {
             AccessType.Public => true,
             AccessType.Private => user.UserId == track.OwnerId,
-            AccessType.OnlyFans => user.Friends.Contains(track.OwnerId),
+            AccessType.OnlyFans => await _apiClient.IsFriends(token, user.UserId, cancellationToken),
             _ => throw new NotImplementedException(
                 $"Access type {Enum.GetName(track.TrackMetaDataInfo.AccessType)} not implemented yet")
         };
+    }
+
+    public bool CheckTrackAvailability(User userId, Track track)
+    {
+        throw new NotImplementedException();
     }
 
     public bool CheckPlaylistAvailability(User user, Playlist playlist)

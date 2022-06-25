@@ -135,8 +135,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         return _databaseContext.Playlists
             .AsEnumerable()
             .Where(playlist => _availabilityService
-                .CheckPlaylistAvailability(user.Id, playlist));
-                .CheckPlaylistAvailability(user, playlist)).AsEnumerable();
+                .CheckPlaylistAvailability(user, playlist));
 
     }
 
