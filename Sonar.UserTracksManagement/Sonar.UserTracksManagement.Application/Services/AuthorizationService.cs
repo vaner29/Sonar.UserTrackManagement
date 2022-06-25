@@ -1,8 +1,8 @@
-﻿using Sonar.UserProfile.ApiClient.Dto;
-using Sonar.UserProfile.ApiClient.Interfaces;
+﻿using Sonar.UserProfile.ApiClient.Interfaces;
 using Sonar.UserProfile.ApiClient.Tools;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Tools;
+using Sonar.UserTracksManagement.Core.Entities;
 using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Services;
