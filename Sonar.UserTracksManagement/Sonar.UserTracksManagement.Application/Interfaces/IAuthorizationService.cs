@@ -1,8 +1,8 @@
-﻿using Sonar.UserProfile.ApiClient;
+﻿using Sonar.UserProfile.ApiClient.Dto;
 
 namespace Sonar.UserTracksManagement.Application.Interfaces;
 
 public interface IAuthorizationService
 {
-    Task<UserGetDto> GetUserAsync(string token);
+    Task<UserDto> GetUserAsync(string token, CancellationToken cancellationToken);
 }

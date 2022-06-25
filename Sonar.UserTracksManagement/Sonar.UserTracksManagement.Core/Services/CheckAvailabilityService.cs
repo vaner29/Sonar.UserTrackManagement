@@ -12,6 +12,6 @@ public class CheckAvailabilityService : ICheckAvailabilityService
 
     public bool CheckPlaylistAvailability(Guid userId, Playlist playlist)
     {
-        return playlist.UserId.Equals(userId);
+        return playlist.UserId == userId;
     }
 }
