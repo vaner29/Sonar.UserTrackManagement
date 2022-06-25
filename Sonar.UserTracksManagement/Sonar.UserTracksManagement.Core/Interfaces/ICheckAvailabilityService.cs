@@ -4,6 +4,6 @@ namespace Sonar.UserTracksManagement.Core.Interfaces;
 
 public interface ICheckAvailabilityService
 {
-    bool CheckTrackAvailability(Guid userId, Track track);
-    bool CheckPlaylistAvailability(Guid userId, Playlist playlist);
+    bool CheckTrackAvailability(User userId, Track track);
+    bool CheckPlaylistAvailability(User userId, Playlist playlist);
 }

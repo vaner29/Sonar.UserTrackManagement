@@ -5,13 +5,20 @@ namespace Sonar.UserTracksManagement.Core.Services;
 
 public class CheckAvailabilityService : ICheckAvailabilityService
 {
-    public bool CheckTrackAvailability(Guid userId, Track track)
+    public bool CheckTrackAvailability(User user, Track track)
     {
-        return track.OwnerId.Equals(userId);
+        return track.TrackMetaDataInfo.AccessType switch
+        {
+            AccessType.Public => true,
+            AccessType.Private => user.UserId == track.OwnerId,
+            AccessType.OnlyFans => user.Friends.Contains(track.OwnerId),
+            _ => throw new NotImplementedException(
+                $"Access type {Enum.GetName(track.TrackMetaDataInfo.AccessType)} not implemented yet")
+        };
     }
 
-    public bool CheckPlaylistAvailability(Guid userId, Playlist playlist)
+    public bool CheckPlaylistAvailability(User user, Playlist playlist)
     {
-        return playlist.UserId == userId;
+        return playlist.UserId == user.UserId;
     }
 }
