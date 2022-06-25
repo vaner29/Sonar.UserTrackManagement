@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ServerApi.Filters;
 using Sonar.UserProfile.ApiClient;
+using Sonar.UserProfile.ApiClient.Interfaces;
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Application.Services;
