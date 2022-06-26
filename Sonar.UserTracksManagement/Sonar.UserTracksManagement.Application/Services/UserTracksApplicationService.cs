@@ -119,7 +119,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
             throw new InvalidArgumentsException("track with given id doesn't exists");
         }
         
-        if (_checkAvailabilityService.CheckTrackAvailability(user, track))
+        if (!_checkAvailabilityService.CheckTrackAvailability(user, track))
         {
             throw new UserAccessException("this user has no this track");
         }
