@@ -98,7 +98,7 @@ public class UserTracksController : Controller
     }
 
     [HttpGet]
-    [Route("/with-tag")]
+    [Route("with-tag")]
     public async Task<ActionResult<IEnumerable<Playlist>>> GetPlaylistWithTag(
         [FromHeader(Name = "Token")] string token,
         [FromQuery] string tag,
