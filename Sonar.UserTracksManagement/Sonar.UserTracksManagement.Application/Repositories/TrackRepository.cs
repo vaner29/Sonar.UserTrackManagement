@@ -113,4 +113,20 @@ public class TrackRepository : ITrackRepository
 
         return track;
     }
+
+    public Task<IEnumerable<Track>> GetTrackWithTagForAvailableUserAsync(
+        string token,
+        User user, 
+        Tag tag, 
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(
+            _databaseContext.Tracks
+                .AsEnumerable()
+                .Where(item => 
+                    _availabilityService
+                        .CheckTrackAvailability(token, user, item, cancellationToken).Result &&
+                    item.TrackMetaDataInfo.Tags
+                        .Contains(tag)));
+    }
 }

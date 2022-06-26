@@ -11,4 +11,5 @@ public interface IUserTracksApplicationService
     Task<TrackDto> GetTrackAsync(string token, Guid trackId, CancellationToken cancellationToken);
     Task DeleteTrackAsync(string token, Guid trackId, CancellationToken cancellationToken);
     Task ChangeAccessType(string token, Guid trackId, AccessType type, CancellationToken cancellationToken);
+    Task<IEnumerable<TrackDto>> GetUserTracksWithTagAsync(string token, string tagName, CancellationToken cancellationToken);
 }

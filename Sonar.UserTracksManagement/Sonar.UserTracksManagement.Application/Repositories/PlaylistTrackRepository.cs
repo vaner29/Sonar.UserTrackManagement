@@ -17,14 +17,20 @@ public class PlaylistTrackRepository : IPlaylistTrackRepository
         _databaseContext = databaseContext;
     }
 
-    public async Task AddAsync(Playlist playlist, Track track, CancellationToken cancellationToken)
+    public async Task AddAsync(
+        Playlist playlist, 
+        Track track, 
+        CancellationToken cancellationToken)
     {
         var playlistTrack = _playlistService.AddTrackToPlaylist(playlist, track);
         await _databaseContext.PlaylistTracks.AddAsync(playlistTrack, cancellationToken);
         await _databaseContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Playlist playlist, Track track, CancellationToken cancellationToken)
+    public async Task DeleteAsync(
+        Playlist playlist, 
+        Track track, 
+        CancellationToken cancellationToken)
     {
         var playlistTrack = _playlistService.RemoveTrackFromPlaylist(playlist, track);
         await _databaseContext.PlaylistTracks.AddAsync(playlistTrack, cancellationToken);

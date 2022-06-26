@@ -12,17 +12,20 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     private readonly IAuthorizationService _authorizationService;
     private readonly ICheckAvailabilityService _checkAvailabilityService;
     private readonly ITrackRepository _trackRepository;
+    private readonly ITagRepository _tagRepository;
 
     public UserTracksApplicationService(
         IUserTrackService trackService,
         IAuthorizationService trackManagerService,
         ICheckAvailabilityService checkAvailabilityService,
-        ITrackRepository trackRepository)
+        ITrackRepository trackRepository, 
+        ITagRepository tagRepository)
     {
         _trackService = trackService;
         _authorizationService = trackManagerService;
         _checkAvailabilityService = checkAvailabilityService;
         _trackRepository = trackRepository;
+        _tagRepository = tagRepository;
     }
 
     public async Task<Guid> AddTrackAsync(
@@ -59,10 +62,12 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         var tracks = await _trackRepository
             .GetUserAllAsync(token, user, cancellationToken);
 
-        return tracks.Select(item => new TrackDto()
+        return tracks.Select(track => new TrackDto()
         {
-            Id = item.Id,
-            Name = item.Name
+            Id = track.Id,
+            Name = track.Name,
+            OwnerId = track.OwnerId,
+            Type = track.TrackMetaDataInfo.AccessType
         });
     }
 
@@ -79,7 +84,9 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         return new TrackDto
         {
             Id = track.Id,
-            Name = track.Name
+            Name = track.Name,
+            OwnerId = track.OwnerId,
+            Type = track.TrackMetaDataInfo.AccessType
         };
     }
 
@@ -106,5 +113,26 @@ public class UserTracksApplicationService : IUserTracksApplicationService
             .GetToOwnerAsync(user, trackId, cancellationToken);
 
         _trackService.ChangeAccessType(track, type);
+    }
+
+    public async Task<IEnumerable<TrackDto>> GetUserTracksWithTagAsync(
+        string token, 
+        string tagName, 
+        CancellationToken cancellationToken)
+    {
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        var tag = await _tagRepository
+            .GetAsync(tagName, cancellationToken);
+        var tracks = await _trackRepository
+            .GetTrackWithTagForAvailableUserAsync(token, user, tag, cancellationToken);
+
+        return tracks.Select(track => new TrackDto()
+        {
+            Id = track.Id,
+            Name = track.Name,
+            OwnerId = track.OwnerId,
+            Type = track.TrackMetaDataInfo.AccessType
+        });
     }
 }

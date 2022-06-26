@@ -10,4 +10,5 @@ public interface ITrackRepository
     Task DeleteAsync(User user, Guid trackId, CancellationToken cancellationToken);
     Task<IEnumerable<Track>> GetUserAllAsync(string token, User user, CancellationToken cancellationToken);
     Task<Track> GetAsync(Guid trackId, CancellationToken cancellationToken);
+    Task<IEnumerable<Track>> GetTrackWithTagForAvailableUserAsync(string token, User user, Tag tag, CancellationToken cancellationToken);
 }
