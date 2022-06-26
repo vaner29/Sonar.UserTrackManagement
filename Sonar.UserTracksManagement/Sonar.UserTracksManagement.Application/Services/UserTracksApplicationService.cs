@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sonar.UserProfile.ApiClient.Interfaces;
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Dto;
 using Sonar.UserTracksManagement.Application.Interfaces;
@@ -14,15 +13,12 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     private readonly IAuthorizationService _authorizationService;
     private readonly IUserTrackService _userTracksService;
     private readonly ICheckAvailabilityService _checkAvailabilityService;
-    private readonly IRelationshipApiClient _apiClient;
     public UserTracksApplicationService(
-        IRelationshipApiClient apiClient,
         IAuthorizationService trackManagerService, 
         UserTracksManagementDatabaseContext context, 
         IUserTrackService userTracksService,
         ICheckAvailabilityService checkAvailabilityService)
     {
-        _apiClient = apiClient;
         _authorizationService = trackManagerService;
         _context = context;
         _userTracksService = userTracksService;
@@ -46,25 +42,32 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
     {
         if (trackId.Equals(Guid.Empty))
+        {
             throw new InvalidArgumentsException("Guid can't be empty");
+        }
 
         var user = await _authorizationService.GetUserAsync(token, cancellationToken);
 
-        var track = await _context.Tracks.FirstOrDefaultAsync(
-            item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
+        var track = await _context.Tracks
+            .FirstOrDefaultAsync(
+                item => item.Id.Equals(trackId), 
+                cancellationToken: cancellationToken);
 
         if (track is null)
         {
-            throw new InvalidArgumentsException("track with given id doesn't exists");
+            throw new InvalidArgumentsException("Couldn't find track with given ID");
         }
         
-        return _checkAvailabilityService.CheckTrackAvailability(user, track);
+        return await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken);
     }
 
     public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token, CancellationToken cancellationToken)
     {
-        var userId = await _authorizationService.GetUserIdAsync(token, cancellationToken);
-        var tracks = _context.Tracks.Where(item => item.OwnerId.Equals(userId)).ToList();
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+        var tracks = _context.Tracks
+            .AsEnumerable()
+            .Where(item => _checkAvailabilityService
+                .CheckTrackAvailability(token, user, item, cancellationToken).Result);
         
         return tracks.Select(item => new TrackDto()
         {
@@ -82,17 +85,19 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
         var user = await _authorizationService.GetUserAsync(token, cancellationToken);
 
-        var track = await _context.Tracks.FirstOrDefaultAsync(
-            item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
+        var track = await _context.Tracks
+            .FirstOrDefaultAsync(
+                item => item.Id.Equals(trackId), 
+                cancellationToken: cancellationToken);
         
         if (track is null)
         {
-            throw new InvalidArgumentsException("track with given id doesn't exists");
+            throw new InvalidArgumentsException("Couldn't find track with given ID");
         }
 
-        if (!_checkAvailabilityService.CheckTrackAvailability(user, track))
+        if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
         {
-            throw new UserAccessException("this user has no this track");
+            throw new UserAccessException("User doesn't have access to given playlist");
         }
         
         return new TrackDto
@@ -111,17 +116,19 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         
         var user = await _authorizationService.GetUserAsync(token, cancellationToken);
 
-        var track = await _context.Tracks.FirstOrDefaultAsync(
-            item => item.Id.Equals(trackId), cancellationToken: cancellationToken);
+        var track = await _context.Tracks
+            .FirstOrDefaultAsync(
+                item => item.Id.Equals(trackId), 
+                cancellationToken: cancellationToken);
         
         if (track is null)
         {
-            throw new InvalidArgumentsException("track with given id doesn't exists");
+            throw new InvalidArgumentsException("Couldn't find track with given ID");
         }
         
-        if (!_checkAvailabilityService.CheckTrackAvailability(user, track))
+        if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
         {
-            throw new UserAccessException("this user has no this track");
+            throw new UserAccessException("User doesn't have access to given playlist");
         }
 
         _context.Tracks.Remove(track);
