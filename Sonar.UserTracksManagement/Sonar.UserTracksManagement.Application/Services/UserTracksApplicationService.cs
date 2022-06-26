@@ -74,7 +74,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var track = await _trackRepository
-            .GetIfAvailableAsync(token, user, trackId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, trackId, cancellationToken);
 
         return new TrackDto
         {
@@ -103,7 +103,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var track = await _trackRepository
-            .GetIfOwnerAsync(user, trackId, cancellationToken);
+            .GetToOwnerAsync(user, trackId, cancellationToken);
 
         _trackService.ChangeAccessType(track, type);
     }

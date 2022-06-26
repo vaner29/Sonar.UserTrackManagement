@@ -41,7 +41,7 @@ public class TrackRepository : ITrackRepository
         return track;
     }
 
-    public async Task<Track> GetIfAvailableAsync(
+    public async Task<Track> GetToAvailableUserAsync(
         string token,
         User user,
         Guid trackId,
@@ -57,7 +57,7 @@ public class TrackRepository : ITrackRepository
         return track;
     }
 
-    public async Task<Track> GetIfOwnerAsync(
+    public async Task<Track> GetToOwnerAsync(
         User user,
         Guid trackId,
         CancellationToken cancellationToken)
@@ -77,7 +77,7 @@ public class TrackRepository : ITrackRepository
         Guid trackId,
         CancellationToken cancellationToken)
     {
-        var track = await GetIfOwnerAsync(user, trackId, cancellationToken);
+        var track = await GetToOwnerAsync(user, trackId, cancellationToken);
         _databaseContext.Tracks.Remove(track);
         await _databaseContext.SaveChangesAsync(cancellationToken);
     }

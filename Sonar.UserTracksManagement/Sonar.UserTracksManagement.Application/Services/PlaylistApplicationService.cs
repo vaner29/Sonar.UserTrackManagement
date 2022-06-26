@@ -50,9 +50,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfAvailableAsync(token, user, playlistId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, playlistId, cancellationToken);
         var track = await _trackRepository
-            .GetIfAvailableAsync(token, user, trackId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, trackId, cancellationToken);
         await _playlistTrackRepository
             .AddAsync(playlist, track, cancellationToken);
     }
@@ -66,9 +66,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfAvailableAsync(token, user, playlistId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, playlistId, cancellationToken);
         var track = await _trackRepository
-            .GetIfAvailableAsync(token, user, trackId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, trackId, cancellationToken);
         if (!_playlistService.CheckPlaylistForTrack(playlist, track))
         {
             throw new PreconditionException("Playlist doesn't have given track");
@@ -86,7 +86,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfAvailableAsync(token, user, playlistId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, playlistId, cancellationToken);
         return _playlistService.GetTracksFromPlaylist(playlist).Select(track => new TrackDto()
         {
             Id = track.Id,
@@ -107,7 +107,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfAvailableAsync(token, user, playlistId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, playlistId, cancellationToken);
 
         return playlist;
     }

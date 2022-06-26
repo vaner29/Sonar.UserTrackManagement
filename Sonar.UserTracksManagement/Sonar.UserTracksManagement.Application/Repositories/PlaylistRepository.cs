@@ -40,7 +40,7 @@ public class PlaylistRepository : IPlaylistRepository
         return playlist;
     }
 
-    public async Task<Playlist> GetIfAvailableAsync(
+    public async Task<Playlist> GetToAvailableUserAsync(
         string token,
         User user,
         Guid playlistId,
@@ -55,7 +55,7 @@ public class PlaylistRepository : IPlaylistRepository
         return playlist;
     }
 
-    public async Task<Playlist> GetIfOwnerAsync(
+    public async Task<Playlist> GetToOwnerAsync(
         User user,
         Guid playlistId,
         CancellationToken cancellationToken)
@@ -74,7 +74,7 @@ public class PlaylistRepository : IPlaylistRepository
         Guid playlistId,
         CancellationToken cancellationToken)
     {
-        var playlist = await GetIfOwnerAsync(user, playlistId, cancellationToken);
+        var playlist = await GetToOwnerAsync(user, playlistId, cancellationToken);
         _databaseContext.Remove(playlist);
         await _databaseContext.SaveChangesAsync(cancellationToken);
     }
