@@ -87,7 +87,8 @@ public class TrackRepository : ITrackRepository
         AccessType newAccessType, 
         CancellationToken cancellationToken)
     {
-        track.TrackMetaDataInfo.AccessType = newAccessType;
+        _trackService.ChangeAccessType(track, newAccessType);
+        await _databaseContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task<IEnumerable<Track>> GetUserAllAsync(

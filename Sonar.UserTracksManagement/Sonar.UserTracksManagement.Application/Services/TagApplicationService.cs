@@ -2,13 +2,11 @@
 using Sonar.UserTracksManagement.Application.Repositories;
 using Sonar.UserTracksManagement.Application.Tools;
 using Sonar.UserTracksManagement.Core.Entities;
-using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Services;
 
 public class TagApplicationService : ITagApplicationService
 {
-    private readonly ITagService _tagService;
     private readonly IAuthorizationService _authorizationService;
     private readonly IPlaylistRepository _playlistRepository;
     private readonly ITrackRepository _trackRepository;
@@ -16,13 +14,11 @@ public class TagApplicationService : ITagApplicationService
 
 
     public TagApplicationService(
-        ITagService tagService,
         IAuthorizationService authorizationService,
         ITrackRepository trackRepository, 
         IPlaylistRepository playlistRepository, 
         ITagRepository tagRepository)
     {
-        _tagService = tagService;
         _authorizationService = authorizationService;
         _trackRepository = trackRepository;
         _playlistRepository = playlistRepository;
@@ -53,8 +49,9 @@ public class TagApplicationService : ITagApplicationService
         {
             throw new PreconditionException("Playlist already has given tag");
         }
-        
-        _tagService.AssignTagToMetaDataInfo(playlist.PlaylistMetaDataInfo, tag);
+
+        await _tagRepository
+            .Assign(playlist.PlaylistMetaDataInfo, tag, cancellationToken);
     }
 
     public async Task AssignTagToTrackAsync(
@@ -74,7 +71,8 @@ public class TagApplicationService : ITagApplicationService
             throw new PreconditionException("Track already has given tag");
         }
         
-        _tagService.AssignTagToMetaDataInfo(track.TrackMetaDataInfo, tag);
+        await _tagRepository
+            .Assign(track.TrackMetaDataInfo, tag, cancellationToken);
     }
 
     public async Task RemoveTagFromPlaylistAsync(
@@ -94,7 +92,8 @@ public class TagApplicationService : ITagApplicationService
             throw new PreconditionException("Playlist doesn't have given tag");
         }
         
-        _tagService.RemoveTagFromMetaDataInfo(playlist.PlaylistMetaDataInfo, tag);
+        await _tagRepository
+            .Remove(playlist.PlaylistMetaDataInfo, tag, cancellationToken);
     }
 
     public async  Task RemoveTagFromTrackAsync(
@@ -114,7 +113,8 @@ public class TagApplicationService : ITagApplicationService
             throw new PreconditionException("Track doesn't have given tag");
         }
         
-        _tagService.RemoveTagFromMetaDataInfo(track.TrackMetaDataInfo, tag);
+        await _tagRepository
+            .Remove(track.TrackMetaDataInfo, tag, cancellationToken);
     }
 
     public async Task<IEnumerable<Tag>> GetTrackTags(string token, Guid trackId, CancellationToken cancellationToken)

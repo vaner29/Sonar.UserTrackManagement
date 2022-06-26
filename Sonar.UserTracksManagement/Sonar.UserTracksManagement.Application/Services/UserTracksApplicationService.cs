@@ -8,20 +8,17 @@ namespace Sonar.UserTracksManagement.Application.Services;
 
 public class UserTracksApplicationService : IUserTracksApplicationService
 {
-    private readonly IUserTrackService _trackService;
     private readonly IAuthorizationService _authorizationService;
     private readonly ICheckAvailabilityService _checkAvailabilityService;
     private readonly ITrackRepository _trackRepository;
     private readonly ITagRepository _tagRepository;
 
     public UserTracksApplicationService(
-        IUserTrackService trackService,
         IAuthorizationService trackManagerService,
         ICheckAvailabilityService checkAvailabilityService,
         ITrackRepository trackRepository, 
         ITagRepository tagRepository)
     {
-        _trackService = trackService;
         _authorizationService = trackManagerService;
         _checkAvailabilityService = checkAvailabilityService;
         _trackRepository = trackRepository;
@@ -111,8 +108,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
             .GetUserAsync(token, cancellationToken);
         var track = await _trackRepository
             .GetToOwnerAsync(user, trackId, cancellationToken);
-
-        _trackService.ChangeAccessType(track, type);
+        
         await _trackRepository.ChangeTrackAccessLevelAsync(track, type, cancellationToken);
     }
 

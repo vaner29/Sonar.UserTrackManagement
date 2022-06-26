@@ -2,16 +2,20 @@
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Tools;
 using Sonar.UserTracksManagement.Core.Entities;
+using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Repositories;
 
 public class TagRepository : ITagRepository
 {
+    private readonly ITagService _tagService;
     private readonly UserTracksManagementDatabaseContext _databaseContext;
 
     public TagRepository(
+        ITagService tagService,
         UserTracksManagementDatabaseContext databaseContext)
     {
+        _tagService = tagService;
         _databaseContext = databaseContext;
     }
 
@@ -55,6 +59,22 @@ public class TagRepository : ITagRepository
 
         return tag;
     }
+
+    public async Task Assign(
+        MetaDataInfo metaDataInfo,
+        Tag tag,
+        CancellationToken cancellationToken)
+    {
+        _tagService.AssignTagToMetaDataInfo(metaDataInfo, tag);
+        await _databaseContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task Remove(MetaDataInfo metaDataInfo, Tag tag, CancellationToken cancellationToken)
+    {
+        _tagService.RemoveTagFromMetaDataInfo(metaDataInfo, tag);
+        await _databaseContext.SaveChangesAsync(cancellationToken);
+    }
+
 
     private static void CheckName(
         string tagName)

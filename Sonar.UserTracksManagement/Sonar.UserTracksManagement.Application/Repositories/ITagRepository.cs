@@ -6,4 +6,6 @@ public interface ITagRepository
 {
     Task<Tag> AddAsync(string tagName, CancellationToken cancellationToken);
     Task<Tag> GetAsync(string tagName, CancellationToken cancellationToken);
+    Task Assign(MetaDataInfo metaDataInfo, Tag tag, CancellationToken cancellationToken);
+    Task Remove(MetaDataInfo metaDataInfo, Tag tag, CancellationToken cancellationToken);
 }
