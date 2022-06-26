@@ -99,7 +99,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
 
         if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
         {
-            throw new UserAccessException("User doesn't have access to given playlist");
+            throw new UserAccessException("User doesn't have access to given track");
         }
         
         return new TrackDto
@@ -130,7 +130,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         
         if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
         {
-            throw new UserAccessException("User doesn't have access to given playlist");
+            throw new UserAccessException("User doesn't have access to given track");
         }
 
         _context.Tracks.Remove(track);
