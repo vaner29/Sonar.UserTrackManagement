@@ -1,75 +1,62 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Sonar.UserTracksManagement.Application.Database;
-using Sonar.UserTracksManagement.Application.Dto;
+﻿using Sonar.UserTracksManagement.Application.Dto;
 using Sonar.UserTracksManagement.Application.Interfaces;
-using Sonar.UserTracksManagement.Application.Tools;
+using Sonar.UserTracksManagement.Application.Repositories;
+using Sonar.UserTracksManagement.Core.Entities;
 using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Services;
 
 public class UserTracksApplicationService : IUserTracksApplicationService
 {
-    private readonly UserTracksManagementDatabaseContext _context;
+    private readonly IUserTrackService _trackService;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IUserTrackService _userTracksService;
     private readonly ICheckAvailabilityService _checkAvailabilityService;
+    private readonly ITrackRepository _trackRepository;
     public UserTracksApplicationService(
-        IAuthorizationService trackManagerService, 
-        UserTracksManagementDatabaseContext context, 
-        IUserTrackService userTracksService,
-        ICheckAvailabilityService checkAvailabilityService)
+        IUserTrackService trackService,
+        IAuthorizationService trackManagerService,
+        ICheckAvailabilityService checkAvailabilityService, 
+        ITrackRepository trackRepository)
     {
+        _trackService = trackService;
         _authorizationService = trackManagerService;
-        _context = context;
-        _userTracksService = userTracksService;
         _checkAvailabilityService = checkAvailabilityService;
+        _trackRepository = trackRepository;
     }
 
-    public async Task<Guid> AddTrackAsync(string token, string name, CancellationToken cancellationToken)
+    public async Task<Guid> AddTrackAsync(
+        string token, 
+        string name, 
+        CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
-        }
-        
-        var userId = await _authorizationService.GetUserIdAsync(token, cancellationToken);
-        var track = _userTracksService.AddNewTrack(userId, name);
-        
-        await _context.Tracks.AddAsync(track, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
-        
+        var userId = await _authorizationService
+            .GetUserIdAsync(token, cancellationToken);
+        var track = await _trackRepository
+            .AddAsync(userId, name, cancellationToken);
         return track.Id;
     }
 
-    public async Task<bool> CheckAccessToTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
+    public async Task<bool> CheckAccessToTrackAsync(
+        string token, 
+        Guid trackId, 
+        CancellationToken cancellationToken)
     {
-        if (trackId.Equals(Guid.Empty))
-        {
-            throw new InvalidArgumentsException("Guid can't be empty");
-        }
-
-        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
-
-        var track = await _context.Tracks
-            .FirstOrDefaultAsync(
-                item => item.Id.Equals(trackId), 
-                cancellationToken: cancellationToken);
-
-        if (track is null)
-        {
-            throw new InvalidArgumentsException("Couldn't find track with given ID");
-        }
-        
-        return await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken);
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        var track = await _trackRepository
+            .GetAsync(trackId, cancellationToken);
+        return await _checkAvailabilityService
+            .CheckTrackAvailability(token, user, track, cancellationToken);
     }
 
-    public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(string token, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(
+        string token, 
+        CancellationToken cancellationToken)
     {
-        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
-        var tracks = _context.Tracks
-            .AsEnumerable()
-            .Where(item => _checkAvailabilityService
-                .CheckTrackAvailability(token, user, item, cancellationToken).Result);
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        var tracks = await _trackRepository
+            .GetUserAllAsync(token, user, cancellationToken);
         
         return tracks.Select(item => new TrackDto()
         {
@@ -78,30 +65,16 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         });
     }
 
-    public async Task<TrackDto> GetTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
+    public async Task<TrackDto> GetTrackAsync(
+        string token, 
+        Guid trackId, 
+        CancellationToken cancellationToken)
     {
-        if (trackId.Equals(Guid.Empty))
-        {
-            throw new InvalidArgumentsException("Guid can't be empty");   
-        }
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        var track = await _trackRepository
+            .GetIfAvailableAsync(token, user, trackId, cancellationToken);
 
-        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
-
-        var track = await _context.Tracks
-            .FirstOrDefaultAsync(
-                item => item.Id.Equals(trackId), 
-                cancellationToken: cancellationToken);
-        
-        if (track is null)
-        {
-            throw new InvalidArgumentsException("Couldn't find track with given ID");
-        }
-
-        if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
-        {
-            throw new UserAccessException("User doesn't have access to given track");
-        }
-        
         return new TrackDto
         {
             Id = track.Id,
@@ -109,32 +82,28 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         };
     }
 
-    public async Task DeleteTrackAsync(string token, Guid trackId, CancellationToken cancellationToken)
+    public async Task DeleteTrackAsync(
+        string token, 
+        Guid trackId, 
+        CancellationToken cancellationToken)
     {
-        if (trackId.Equals(Guid.Empty))
-        {
-            throw new InvalidArgumentsException("Guid can't be empty");   
-        }
-        
-        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        await _trackRepository
+            .DeleteAsync(user, trackId, cancellationToken);
+    }
 
-        var track = await _context.Tracks
-            .FirstOrDefaultAsync(
-                item => item.Id.Equals(trackId), 
-                cancellationToken: cancellationToken);
+    public async Task ChangeAccessType(
+        string token, 
+        Guid trackId, 
+        AccessType type, 
+        CancellationToken cancellationToken)
+    {
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        var track = await _trackRepository
+            .GetIfOwnerAsync(user, trackId, cancellationToken);
         
-        if (track is null)
-        {
-            throw new InvalidArgumentsException("Couldn't find track with given ID");
-        }
-        
-        if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
-        {
-            throw new UserAccessException("User doesn't have access to given track");
-        }
-
-        _context.Tracks.Remove(track);
-        
-        await _context.SaveChangesAsync(cancellationToken);
+        _trackService.ChangeAccessType(track, type);
     }
 }
