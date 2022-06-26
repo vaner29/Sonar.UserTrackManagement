@@ -18,19 +18,24 @@ public class CheckAvailabilityService : ICheckAvailabilityService
         return track.TrackMetaDataInfo.AccessType switch
         {
             AccessType.Public => true,
-            AccessType.Private => user.UserId == track.OwnerId,
+            AccessType.Private => IsTrackOwner(user, track),
             AccessType.OnlyFans => await _apiClient.IsFriends(token, user.UserId, cancellationToken),
             _ => throw new NotImplementedException(
                 $"Access type {Enum.GetName(track.TrackMetaDataInfo.AccessType)} not implemented yet")
         };
     }
 
-    public bool CheckTrackAvailability(User userId, Track track)
+    public bool CheckPlaylistAvailability(User user, Playlist playlist)
     {
-        throw new NotImplementedException();
+        return IsPlaylistOwner(user, playlist);
     }
 
-    public bool CheckPlaylistAvailability(User user, Playlist playlist)
+    public bool IsTrackOwner(User user, Track track)
+    {
+        return user.UserId == track.OwnerId;
+    }
+
+    public bool IsPlaylistOwner(User user, Playlist playlist)
     {
         return playlist.UserId == user.UserId;
     }
