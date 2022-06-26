@@ -4,7 +4,6 @@ namespace Sonar.UserTracksManagement.Core.Interfaces;
 
 public interface IPlaylistService
 {
-
     public Playlist CreateNewPlaylist(Guid userId, string name);
     public bool CheckPlaylistForTrack(Playlist playlist, Track track);
     
