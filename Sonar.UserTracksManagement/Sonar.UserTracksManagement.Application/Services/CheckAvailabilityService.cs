@@ -19,7 +19,7 @@ public class CheckAvailabilityService : ICheckAvailabilityService
             AccessType.Public => true,
             AccessType.Private => IsTrackOwner(user, track),
             AccessType.OnlyFans => IsTrackOwner(user, track) || 
-                                   await _apiClient.IsFriends(token, user.UserId, cancellationToken),
+                                   await _apiClient.IsFriends(token, track.OwnerId, cancellationToken),
             _ => throw new NotImplementedException(
                 $"Access type {Enum.GetName(track.TrackMetaDataInfo.AccessType)} not implemented yet")
         };
