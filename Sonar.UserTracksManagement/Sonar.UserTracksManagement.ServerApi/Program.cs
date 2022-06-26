@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<HttpClient>();
 //builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
+builder.Services.AddScoped<IImageApplicationService, ImageApplicationService>();
 builder.Services.AddScoped<IPlaylistApplicationService, PlaylistApplicationService>();
 builder.Services.AddScoped<IUserTracksApplicationService, UserTracksApplicationService>();
 builder.Services.AddScoped<ICheckAvailabilityService, CheckAvailabilityService>();
