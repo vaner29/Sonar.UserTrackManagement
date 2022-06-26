@@ -106,4 +106,26 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         
         _trackService.ChangeAccessType(track, type);
     }
+
+    public async Task ChangeAccessType(string token, Guid trackId, AccessType type, CancellationToken cancellationToken)
+    {
+        var user = await _authorizationService.GetUserAsync(token, cancellationToken);
+
+        var track = await _context.Tracks
+            .FirstOrDefaultAsync(
+                item => item.Id.Equals(trackId), 
+                cancellationToken: cancellationToken);
+        
+        if (track is null)
+        {
+            throw new InvalidArgumentsException("Couldn't find track with given ID");
+        }
+
+        if (!await _checkAvailabilityService.CheckTrackAvailability(token, user, track, cancellationToken))
+        {
+            throw new UserAccessException("User doesn't have access to given track");
+        }
+        
+        _userTracksService.ChangeAccessType(track, type);
+    }
 }
