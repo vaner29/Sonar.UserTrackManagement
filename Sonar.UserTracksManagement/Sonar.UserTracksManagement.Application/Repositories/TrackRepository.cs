@@ -73,8 +73,8 @@ public class TrackRepository : ITrackRepository
     }
 
     public async Task DeleteAsync(
-        User user,
-        Guid trackId,
+        User user, 
+        Guid trackId, 
         CancellationToken cancellationToken)
     {
         var track = await GetToOwnerAsync(user, trackId, cancellationToken);
@@ -82,9 +82,17 @@ public class TrackRepository : ITrackRepository
         await _databaseContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task ChangeTrackAccessLevelAsync(
+        Track track, 
+        AccessType newAccessType, 
+        CancellationToken cancellationToken)
+    {
+        track.TrackMetaDataInfo.AccessType = newAccessType;
+    }
+
     public Task<IEnumerable<Track>> GetUserAllAsync(
-        string token,
-        User user,
+        string token, 
+        User user, 
         CancellationToken cancellationToken)
     {
         return Task.FromResult(
@@ -94,7 +102,9 @@ public class TrackRepository : ITrackRepository
                     .CheckTrackAvailability(token, user, item, cancellationToken).Result));
     }
 
-    public async Task<Track> GetAsync(Guid trackId, CancellationToken cancellationToken)
+    public async Task<Track> GetAsync(
+        Guid trackId, 
+        CancellationToken cancellationToken)
     {
         if (trackId.Equals(Guid.Empty))
         {
