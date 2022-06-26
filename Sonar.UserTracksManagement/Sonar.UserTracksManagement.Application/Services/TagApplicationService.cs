@@ -48,7 +48,7 @@ public class TagApplicationService : ITagApplicationService
         var tag = await _tagRepository
             .GetAsync(tagName, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfOwnerAsync(user, playlistId, cancellationToken);
+            .GetToOwnerAsync(user, playlistId, cancellationToken);
         if (playlist.PlaylistMetaDataInfo.Tags.Contains(tag))
         {
             throw new PreconditionException("Playlist already has given tag");
@@ -68,7 +68,7 @@ public class TagApplicationService : ITagApplicationService
         var tag = await _tagRepository
             .GetAsync(tagName, cancellationToken);
         var track = await _trackRepository
-            .GetIfOwnerAsync(user, trackId, cancellationToken);
+            .GetToOwnerAsync(user, trackId, cancellationToken);
         if (track.TrackMetaDataInfo.Tags.Contains(tag))
         {
             throw new PreconditionException("Track already has given tag");
@@ -88,7 +88,7 @@ public class TagApplicationService : ITagApplicationService
         var tag = await _tagRepository
             .GetAsync(tagName, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfOwnerAsync(user, playlistId, cancellationToken);
+            .GetToOwnerAsync(user, playlistId, cancellationToken);
         if (!playlist.PlaylistMetaDataInfo.Tags.Contains(tag))
         {
             throw new PreconditionException("Playlist doesn't have given tag");
@@ -108,7 +108,7 @@ public class TagApplicationService : ITagApplicationService
         var tag = await _tagRepository
             .GetAsync(tagName, cancellationToken);
         var track = await _trackRepository
-            .GetIfOwnerAsync(user, trackId, cancellationToken);
+            .GetToOwnerAsync(user, trackId, cancellationToken);
         if (!track.TrackMetaDataInfo.Tags.Contains(tag))
         {
             throw new PreconditionException("Track doesn't have given tag");
@@ -122,7 +122,7 @@ public class TagApplicationService : ITagApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var track = await _trackRepository
-            .GetIfAvailableAsync(token, user, trackId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, trackId, cancellationToken);
 
         return track.TrackMetaDataInfo.Tags;
     }
@@ -132,7 +132,7 @@ public class TagApplicationService : ITagApplicationService
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var playlist = await _playlistRepository
-            .GetIfAvailableAsync(token, user, playlistId, cancellationToken);
+            .GetToAvailableUserAsync(token, user, playlistId, cancellationToken);
         
         return playlist.PlaylistMetaDataInfo.Tags;
     }
