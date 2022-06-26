@@ -18,7 +18,7 @@ public class UserTracksController : Controller
 
     [HttpPost]
     public async Task<ActionResult<Guid>> AddTrack(
-        [FromHeader(Name = "Token")] string token, 
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] string name,
         CancellationToken cancellationToken)
     {
@@ -34,26 +34,26 @@ public class UserTracksController : Controller
     {
         return Ok(await _service.GetAllUserTracksAsync(token, cancellationToken));
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<TrackDto>> GetTrack(
-        [FromHeader(Name = "Token")] string token, 
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid trackId,
         CancellationToken cancellationToken)
     {
         return Ok(await _service.GetTrackAsync(token, trackId, cancellationToken));
     }
-    
+
     [HttpDelete]
     public async Task<ActionResult> DeleteTrack(
-        [FromHeader(Name = "Token")] string token, 
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid trackId,
         CancellationToken cancellationToken)
     {
         await _service.DeleteTrackAsync(token, trackId, cancellationToken);
         return Ok();
     }
-    
+
     [HttpPatch]
     [Route("change-access-type/private")]
     public async Task<ActionResult<bool>> ChangeAccessToPrivate(
@@ -64,7 +64,7 @@ public class UserTracksController : Controller
         await _service.ChangeAccessType(token, trackId, AccessType.Private, cancellationToken);
         return Ok();
     }
-    
+
     [HttpPatch]
     [Route("change-access-type/public")]
     public async Task<ActionResult<bool>> ChangeAccessToPublic(
@@ -75,7 +75,7 @@ public class UserTracksController : Controller
         await _service.ChangeAccessType(token, trackId, AccessType.Public, cancellationToken);
         return Ok();
     }
-    
+
     [HttpPatch]
     [Route("change-access-type/only-fans")]
     public async Task<ActionResult<bool>> ChangeAccessToOnlyFans(
@@ -86,7 +86,7 @@ public class UserTracksController : Controller
         await _service.ChangeAccessType(token, trackId, AccessType.OnlyFans, cancellationToken);
         return Ok();
     }
-    
+
     [HttpGet]
     [Route("is-enough-access")]
     public async Task<ActionResult<bool>> CheckAccessToTrack(
@@ -97,4 +97,13 @@ public class UserTracksController : Controller
         return Ok(await _service.CheckAccessToTrackAsync(token, trackId, cancellationToken));
     }
 
+    [HttpGet]
+    [Route("with-tag")]
+    public async Task<ActionResult<IEnumerable<Playlist>>> GetPlaylistWithTag(
+        [FromHeader(Name = "Token")] string token,
+        [FromQuery] string tag,
+        CancellationToken cancellationToken)
+    {
+        return Ok(await _service.GetUserTracksWithTagAsync(token, tag, cancellationToken));
+    }
 }

@@ -12,6 +12,7 @@ public class PlaylistRepository : IPlaylistRepository
     private readonly IPlaylistService _playlistService;
     private readonly ICheckAvailabilityService _availabilityService;
     private readonly UserTracksManagementDatabaseContext _databaseContext;
+    private IPlaylistRepository _playlistRepositoryImplementation;
 
     public PlaylistRepository(
         IPlaylistService playlistService,
@@ -88,6 +89,21 @@ public class PlaylistRepository : IPlaylistRepository
                 .AsEnumerable()
                 .Where(playlist => _availabilityService
                     .CheckPlaylistAvailability(user, playlist)));
+    }
+
+    public Task<IEnumerable<Playlist>> GetPlaylistWithTagForAvailableUserAsync(
+        User user, 
+        Tag tag, 
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(
+            _databaseContext.Playlists
+                .AsEnumerable()
+                .Where(item => 
+                    _availabilityService
+                        .CheckPlaylistAvailability(user, item) &&
+                    item.PlaylistMetaDataInfo.Tags
+                        .Contains(tag)));
     }
 
     public async Task<Playlist> GetAsync(
