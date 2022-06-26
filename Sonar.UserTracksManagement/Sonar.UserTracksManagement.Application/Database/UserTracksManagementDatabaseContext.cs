@@ -14,6 +14,7 @@ public class UserTracksManagementDatabaseContext : DbContext
         PlaylistTracks.Load();
         MetaDataInfos.Load();
         Tags.Load();
+        Images.Load();
     }
     
     public DbSet<Track> Tracks { get; set; }
@@ -21,6 +22,7 @@ public class UserTracksManagementDatabaseContext : DbContext
     public DbSet<PlaylistTrack> PlaylistTracks { get; set; }
     public DbSet<MetaDataInfo> MetaDataInfos { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<Image> Images { get; set; }
  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

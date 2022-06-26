@@ -12,10 +12,12 @@ public class Track
         OwnerId = ownerId;
         Name = name;
         TrackMetaDataInfo = new MetaDataInfo(AccessType.Private);
+        TrackImage = new Image();
     }
     
     public MetaDataInfo TrackMetaDataInfo { get; set; }
     public Guid Id { get; private init; }
     public string Name { get; private set; }
     public Guid OwnerId { get; private init; }
+    public Image TrackImage { get; set; }
 }
