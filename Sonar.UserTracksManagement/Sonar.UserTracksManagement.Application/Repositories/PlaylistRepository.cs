@@ -22,10 +22,10 @@ public class PlaylistRepository : IPlaylistRepository
         _availabilityService = availabilityService;
         _databaseContext = databaseContext;
     }
-    
-     public async Task<Playlist> AddAsync(
-        Guid userId, 
-        string name, 
+
+    public async Task<Playlist> AddAsync(
+        Guid userId,
+        string name,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -36,13 +36,14 @@ public class PlaylistRepository : IPlaylistRepository
         var playlist = _playlistService.CreateNewPlaylist(userId, name);
         await _databaseContext.Playlists.AddAsync(playlist, cancellationToken);
         await _databaseContext.SaveChangesAsync(cancellationToken);
-        
+
         return playlist;
     }
+
     public async Task<Playlist> GetIfAvailableAsync(
-        string token, 
-        User user, 
-        Guid playlistId, 
+        string token,
+        User user,
+        Guid playlistId,
         CancellationToken cancellationToken)
     {
         var playlist = await GetAsync(playlistId, cancellationToken);
@@ -55,8 +56,8 @@ public class PlaylistRepository : IPlaylistRepository
     }
 
     public async Task<Playlist> GetIfOwnerAsync(
-        User user, 
-        Guid playlistId, 
+        User user,
+        Guid playlistId,
         CancellationToken cancellationToken)
     {
         var playlist = await GetAsync(playlistId, cancellationToken);
@@ -69,8 +70,8 @@ public class PlaylistRepository : IPlaylistRepository
     }
 
     public async Task DeleteAsync(
-        User user, 
-        Guid playlistId, 
+        User user,
+        Guid playlistId,
         CancellationToken cancellationToken)
     {
         var playlist = GetIfOwnerAsync(user, playlistId, cancellationToken);
@@ -79,7 +80,7 @@ public class PlaylistRepository : IPlaylistRepository
     }
 
     public Task<IEnumerable<Playlist>> GetUserAllAsync(
-        User user, 
+        User user,
         CancellationToken cancellationToken)
     {
         return Task.FromResult(
@@ -89,20 +90,20 @@ public class PlaylistRepository : IPlaylistRepository
                     .CheckPlaylistAvailability(user, playlist)));
     }
 
-   public async Task<Playlist> GetAsync(
-        Guid playlistId, 
+    public async Task<Playlist> GetAsync(
+        Guid playlistId,
         CancellationToken cancellationToken)
     {
         if (playlistId.Equals(Guid.Empty))
         {
             throw new InvalidArgumentsException("Guid can't be empty");
         }
-        
+
         var playlist = await _databaseContext.Playlists
             .FirstOrDefaultAsync(
-                track => track.Id.Equals(playlistId), 
+                track => track.Id.Equals(playlistId),
                 cancellationToken: cancellationToken);
-        
+
         if (playlist is null)
         {
             throw new NotFoundArgumentsException("Couldn't find playlist with given ID");

@@ -24,8 +24,8 @@ public class TrackRepository : ITrackRepository
     }
 
     public async Task<Track> AddAsync(
-        Guid userId, 
-        string name, 
+        Guid userId,
+        string name,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -34,17 +34,17 @@ public class TrackRepository : ITrackRepository
         }
 
         var track = _trackService.AddNewTrack(userId, name);
-        
+
         await _databaseContext.Tracks.AddAsync(track, cancellationToken);
         await _databaseContext.SaveChangesAsync(cancellationToken);
-        
+
         return track;
     }
 
     public async Task<Track> GetIfAvailableAsync(
-        string token, 
-        User user, 
-        Guid trackId, 
+        string token,
+        User user,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var track = await GetAsync(trackId, cancellationToken);
@@ -58,12 +58,12 @@ public class TrackRepository : ITrackRepository
     }
 
     public async Task<Track> GetIfOwnerAsync(
-        User user, 
-        Guid trackId, 
+        User user,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var track = await GetAsync(trackId, cancellationToken);
-        
+
         if (!_availabilityService.IsTrackOwner(user, track))
         {
             throw new UserAccessException("User isn't owner of given track");
@@ -73,8 +73,8 @@ public class TrackRepository : ITrackRepository
     }
 
     public async Task DeleteAsync(
-        User user, 
-        Guid trackId, 
+        User user,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var track = await GetIfOwnerAsync(user, trackId, cancellationToken);
@@ -83,29 +83,29 @@ public class TrackRepository : ITrackRepository
     }
 
     public Task<IEnumerable<Track>> GetUserAllAsync(
-        string token, 
-        User user, 
+        string token,
+        User user,
         CancellationToken cancellationToken)
-    { 
+    {
         return Task.FromResult(
             _databaseContext.Tracks
                 .AsEnumerable()
                 .Where(item => _availabilityService
                     .CheckTrackAvailability(token, user, item, cancellationToken).Result));
     }
-    
+
     public async Task<Track> GetAsync(Guid trackId, CancellationToken cancellationToken)
     {
         if (trackId.Equals(Guid.Empty))
         {
             throw new InvalidArgumentsException("Guid can't be empty");
         }
-        
+
         var track = await _databaseContext.Tracks
             .FirstOrDefaultAsync(
-                track => track.Id.Equals(trackId), 
+                track => track.Id.Equals(trackId),
                 cancellationToken: cancellationToken);
-        
+
         if (track is null)
         {
             throw new NotFoundArgumentsException("Couldn't find track with given ID");

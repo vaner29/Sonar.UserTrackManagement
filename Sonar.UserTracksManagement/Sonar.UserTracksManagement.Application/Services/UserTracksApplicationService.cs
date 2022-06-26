@@ -12,10 +12,11 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     private readonly IAuthorizationService _authorizationService;
     private readonly ICheckAvailabilityService _checkAvailabilityService;
     private readonly ITrackRepository _trackRepository;
+
     public UserTracksApplicationService(
         IUserTrackService trackService,
         IAuthorizationService trackManagerService,
-        ICheckAvailabilityService checkAvailabilityService, 
+        ICheckAvailabilityService checkAvailabilityService,
         ITrackRepository trackRepository)
     {
         _trackService = trackService;
@@ -25,8 +26,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     }
 
     public async Task<Guid> AddTrackAsync(
-        string token, 
-        string name, 
+        string token,
+        string name,
         CancellationToken cancellationToken)
     {
         var userId = await _authorizationService
@@ -37,8 +38,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     }
 
     public async Task<bool> CheckAccessToTrackAsync(
-        string token, 
-        Guid trackId, 
+        string token,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
@@ -50,14 +51,14 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     }
 
     public async Task<IEnumerable<TrackDto>> GetAllUserTracksAsync(
-        string token, 
+        string token,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var tracks = await _trackRepository
             .GetUserAllAsync(token, user, cancellationToken);
-        
+
         return tracks.Select(item => new TrackDto()
         {
             Id = item.Id,
@@ -66,8 +67,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     }
 
     public async Task<TrackDto> GetTrackAsync(
-        string token, 
-        Guid trackId, 
+        string token,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
@@ -83,8 +84,8 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     }
 
     public async Task DeleteTrackAsync(
-        string token, 
-        Guid trackId, 
+        string token,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
@@ -94,16 +95,16 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     }
 
     public async Task ChangeAccessType(
-        string token, 
-        Guid trackId, 
-        AccessType type, 
+        string token,
+        Guid trackId,
+        AccessType type,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
         var track = await _trackRepository
             .GetIfOwnerAsync(user, trackId, cancellationToken);
-        
+
         _trackService.ChangeAccessType(track, type);
     }
 }

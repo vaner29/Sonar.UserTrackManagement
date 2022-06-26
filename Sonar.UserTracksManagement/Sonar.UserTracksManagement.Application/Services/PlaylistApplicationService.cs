@@ -14,11 +14,12 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     private readonly IPlaylistRepository _playlistRepository;
     private readonly ITrackRepository _trackRepository;
     private readonly IPlaylistTrackRepository _playlistTrackRepository;
+
     public PlaylistApplicationService(
         IPlaylistService playlistService,
-        IAuthorizationService authorizationService, 
-        IPlaylistRepository playlistRepository, 
-        ITrackRepository trackRepository, 
+        IAuthorizationService authorizationService,
+        IPlaylistRepository playlistRepository,
+        ITrackRepository trackRepository,
         IPlaylistTrackRepository playlistTrackRepository)
     {
         _playlistService = playlistService;
@@ -27,9 +28,10 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         _trackRepository = trackRepository;
         _playlistTrackRepository = playlistTrackRepository;
     }
+
     public async Task<Guid> CreateAsync(
-        string token, 
-        string name, 
+        string token,
+        string name,
         CancellationToken cancellationToken)
     {
         var userId = await _authorizationService
@@ -40,9 +42,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     }
 
     public async Task AddTrackAsync(
-        string token, 
-        Guid playlistId, 
-        Guid trackId, 
+        string token,
+        Guid playlistId,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
@@ -56,9 +58,9 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     }
 
     public async Task RemoveTrackAsync(
-        string token, 
-        Guid playlistId, 
-        Guid trackId, 
+        string token,
+        Guid playlistId,
+        Guid trackId,
         CancellationToken cancellationToken)
     {
         var user = await _authorizationService
@@ -71,7 +73,7 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         {
             throw new PreconditionException("Playlist doesn't have given track");
         }
-        
+
         await _playlistTrackRepository
             .DeleteAsync(playlist, track, cancellationToken);
     }
