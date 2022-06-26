@@ -125,7 +125,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
         var tag = await _tagRepository
             .GetAsync(tagName, cancellationToken);
         var tracks = await _trackRepository
-            .GetUserWithTagAsync(token, user, tag, cancellationToken);
+            .GetTrackWithTagForAvailableUserAsync(token, user, tag, cancellationToken);
 
         return tracks.Select(track => new TrackDto()
         {

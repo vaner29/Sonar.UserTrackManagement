@@ -91,7 +91,10 @@ public class PlaylistRepository : IPlaylistRepository
                     .CheckPlaylistAvailability(user, playlist)));
     }
 
-    public Task<IEnumerable<Playlist>> GetUserWithTagAsync(User user, Tag tag, CancellationToken cancellationToken)
+    public Task<IEnumerable<Playlist>> GetPlaylistWithTagForAvailableUserAsync(
+        User user, 
+        Tag tag, 
+        CancellationToken cancellationToken)
     {
         return Task.FromResult(
             _databaseContext.Playlists

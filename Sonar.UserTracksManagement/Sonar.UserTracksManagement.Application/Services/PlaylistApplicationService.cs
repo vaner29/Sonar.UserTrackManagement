@@ -132,6 +132,6 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         var tag = await _tagRepository
             .GetAsync(tagName, cancellationToken);
         return await _playlistRepository
-            .GetUserWithTagAsync(user, tag, cancellationToken);
+            .GetPlaylistWithTagForAvailableUserAsync(user, tag, cancellationToken);
     }
 }

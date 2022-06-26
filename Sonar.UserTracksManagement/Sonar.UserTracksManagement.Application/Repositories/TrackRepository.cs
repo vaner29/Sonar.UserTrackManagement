@@ -114,7 +114,7 @@ public class TrackRepository : ITrackRepository
         return track;
     }
 
-    public Task<IEnumerable<Track>> GetUserWithTagAsync(
+    public Task<IEnumerable<Track>> GetTrackWithTagForAvailableUserAsync(
         string token,
         User user, 
         Tag tag, 

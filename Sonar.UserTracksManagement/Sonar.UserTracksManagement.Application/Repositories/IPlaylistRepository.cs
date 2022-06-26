@@ -10,5 +10,5 @@ public interface IPlaylistRepository
     Task<Playlist> GetAsync(Guid playlistId, CancellationToken cancellationToken);
     Task DeleteAsync(User user, Guid playlistId, CancellationToken cancellationToken);
     Task<IEnumerable<Playlist>> GetUserAllAsync(User user, CancellationToken cancellationToken);
-    Task<IEnumerable<Playlist>> GetUserWithTagAsync(User user, Tag tag, CancellationToken cancellationToken);
+    Task<IEnumerable<Playlist>> GetPlaylistWithTagForAvailableUserAsync(User user, Tag tag, CancellationToken cancellationToken);
 }
