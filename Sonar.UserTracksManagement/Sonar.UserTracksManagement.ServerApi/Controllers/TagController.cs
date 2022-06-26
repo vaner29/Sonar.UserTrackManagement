@@ -17,7 +17,7 @@ public class TagController : Controller
 
     [HttpPost]
     public async Task<ActionResult> Register(
-        [FromQuery] string name, 
+        [FromQuery] string name,
         CancellationToken cancellationToken)
     {
         await _service.RegisterTagAsync(name, cancellationToken);
@@ -27,17 +27,17 @@ public class TagController : Controller
     [HttpGet]
     [Route("playlist-all")]
     public async Task<ActionResult<Tag>> GetFromPlaylist(
-        [FromHeader] string token,
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid playlistId,
         CancellationToken cancellationToken)
     {
         return Ok(await _service.GetPlaylistTags(token, playlistId, cancellationToken));
     }
-    
+
     [HttpGet]
     [Route("track-all")]
     public async Task<ActionResult<Tag>> GetFromTrack(
-        [FromHeader] string token,
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid trackId,
         CancellationToken cancellationToken)
     {
@@ -47,7 +47,7 @@ public class TagController : Controller
     [HttpPost]
     [Route("assign-to-playlist")]
     public async Task<ActionResult> AssignToPlaylist(
-        [FromHeader] string token,
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid playlistId,
         [FromQuery] string tagName,
         CancellationToken cancellationToken)
@@ -55,11 +55,11 @@ public class TagController : Controller
         await _service.AssignTagToPlaylistAsync(token, tagName, playlistId, cancellationToken);
         return Ok();
     }
-    
+
     [HttpPost]
     [Route("assign-to-track")]
     public async Task<ActionResult> AssignToTrack(
-        [FromHeader] string token,
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid trackId,
         [FromQuery] string tagName,
         CancellationToken cancellationToken)
@@ -67,11 +67,11 @@ public class TagController : Controller
         await _service.AssignTagToTrackAsync(token, tagName, trackId, cancellationToken);
         return Ok();
     }
-    
+
     [HttpDelete]
     [Route("remove-from-playlist")]
     public async Task<ActionResult> RemoveFromPlaylist(
-        [FromHeader] string token,
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid playlistId,
         [FromQuery] string tagName,
         CancellationToken cancellationToken)
@@ -79,11 +79,11 @@ public class TagController : Controller
         await _service.RemoveTagFromPlaylistAsync(token, tagName, playlistId, cancellationToken);
         return Ok();
     }
-    
+
     [HttpDelete]
     [Route("remove-from-track")]
     public async Task<ActionResult> RemoveFromTrack(
-        [FromHeader] string token,
+        [FromHeader(Name = "Token")] string token,
         [FromQuery] Guid trackId,
         [FromQuery] string tagName,
         CancellationToken cancellationToken)
