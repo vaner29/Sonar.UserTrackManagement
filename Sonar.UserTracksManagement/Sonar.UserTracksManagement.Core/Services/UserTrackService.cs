@@ -9,4 +9,9 @@ public class UserTrackService : IUserTrackService
     {
         return new Track(ownerId, name);
     }
+
+    public void ChangeAccessType(Track track, AccessType type)
+    {
+        track.TrackMetaDataInfo.AccessType = type;
+    }
 }

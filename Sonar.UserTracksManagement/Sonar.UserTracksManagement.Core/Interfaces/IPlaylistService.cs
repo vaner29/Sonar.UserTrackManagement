@@ -12,6 +12,6 @@ public interface IPlaylistService
 
     public PlaylistTrack RemoveTrackFromPlaylist(Playlist playlist, Track track);
 
-    public List<Track> GetTracksFromPlaylist(Playlist playlist);
+    public IEnumerable<Track> GetTracksFromPlaylist(Playlist playlist);
 
 }

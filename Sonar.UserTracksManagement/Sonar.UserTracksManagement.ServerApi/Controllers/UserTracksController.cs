@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sonar.UserTracksManagement.Application.Dto;
 using Sonar.UserTracksManagement.Application.Interfaces;
+using Sonar.UserTracksManagement.Core.Entities;
 
 namespace ServerApi.Controllers;
 
@@ -50,6 +51,39 @@ public class UserTracksController : Controller
         CancellationToken cancellationToken)
     {
         await _service.DeleteTrackAsync(token, trackId, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpPatch]
+    [Route("change-access-type/private")]
+    public async Task<ActionResult<bool>> ChangeAccessToPrivate(
+        [FromHeader(Name = "Token")] string token,
+        [FromQuery] Guid trackId,
+        CancellationToken cancellationToken)
+    {
+        await _service.ChangeAccessType(token, trackId, AccessType.Private, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpPatch]
+    [Route("change-access-type/public")]
+    public async Task<ActionResult<bool>> ChangeAccessToPublic(
+        [FromHeader(Name = "Token")] string token,
+        [FromQuery] Guid trackId,
+        CancellationToken cancellationToken)
+    {
+        await _service.ChangeAccessType(token, trackId, AccessType.Public, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpPatch]
+    [Route("change-access-type/only-fans")]
+    public async Task<ActionResult<bool>> ChangeAccessToOnlyFans(
+        [FromHeader(Name = "Token")] string token,
+        [FromQuery] Guid trackId,
+        CancellationToken cancellationToken)
+    {
+        await _service.ChangeAccessType(token, trackId, AccessType.OnlyFans, cancellationToken);
         return Ok();
     }
     
