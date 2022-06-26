@@ -1,13 +1,12 @@
 ﻿using Sonar.UserProfile.ApiClient.Interfaces;
 using Sonar.UserTracksManagement.Application.Interfaces;
 using Sonar.UserTracksManagement.Core.Entities;
-using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Services;
 
 public class CheckAvailabilityService : ICheckAvailabilityService
 {
-    private IRelationshipApiClient _apiClient;
+    private readonly IRelationshipApiClient _apiClient;
     public CheckAvailabilityService(IRelationshipApiClient apiClient)
     {
         _apiClient = apiClient;
@@ -19,7 +18,8 @@ public class CheckAvailabilityService : ICheckAvailabilityService
         {
             AccessType.Public => true,
             AccessType.Private => IsTrackOwner(user, track),
-            AccessType.OnlyFans => await _apiClient.IsFriends(token, user.UserId, cancellationToken),
+            AccessType.OnlyFans => IsTrackOwner(user, track) || 
+                                   await _apiClient.IsFriends(token, user.UserId, cancellationToken),
             _ => throw new NotImplementedException(
                 $"Access type {Enum.GetName(track.TrackMetaDataInfo.AccessType)} not implemented yet")
         };
