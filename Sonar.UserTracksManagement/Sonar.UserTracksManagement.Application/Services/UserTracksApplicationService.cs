@@ -28,7 +28,9 @@ public class UserTracksApplicationService : IUserTracksApplicationService
     public async Task<Guid> AddTrackAsync(string token, string name, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(name))
+        {
             throw new InvalidArgumentsException("Name can't be empty or contain only whitespaces");
+        }
         
         var userId = await _authorizationService.GetUserIdAsync(token, cancellationToken);
         var track = _userTracksService.AddNewTrack(userId, name);
