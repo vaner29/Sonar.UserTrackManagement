@@ -14,19 +14,22 @@ public class PlaylistApplicationService : IPlaylistApplicationService
     private readonly IPlaylistRepository _playlistRepository;
     private readonly ITrackRepository _trackRepository;
     private readonly IPlaylistTrackRepository _playlistTrackRepository;
+    private readonly ITagRepository _tagRepository;
 
     public PlaylistApplicationService(
         IPlaylistService playlistService,
         IAuthorizationService authorizationService,
         IPlaylistRepository playlistRepository,
         ITrackRepository trackRepository,
-        IPlaylistTrackRepository playlistTrackRepository)
+        IPlaylistTrackRepository playlistTrackRepository, 
+        ITagRepository tagRepository)
     {
         _playlistService = playlistService;
         _authorizationService = authorizationService;
         _playlistRepository = playlistRepository;
         _trackRepository = trackRepository;
         _playlistTrackRepository = playlistTrackRepository;
+        _tagRepository = tagRepository;
     }
 
     public async Task<Guid> CreateAsync(
@@ -90,11 +93,15 @@ public class PlaylistApplicationService : IPlaylistApplicationService
         return _playlistService.GetTracksFromPlaylist(playlist).Select(track => new TrackDto()
         {
             Id = track.Id,
-            Name = track.Name
+            Name = track.Name,
+            OwnerId = track.OwnerId,
+            Type = track.TrackMetaDataInfo.AccessType
         });
     }
 
-    public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(
+        string token, 
+        CancellationToken cancellationToken)
     {
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
@@ -102,7 +109,10 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             .GetUserAllAsync(user, cancellationToken);
     }
 
-    public async Task<Playlist> GetUserPlaylistAsync(string token, Guid playlistId, CancellationToken cancellationToken)
+    public async Task<Playlist> GetUserPlaylistAsync(
+        string token, 
+        Guid playlistId, 
+        CancellationToken cancellationToken)
     {
         var user = await _authorizationService
             .GetUserAsync(token, cancellationToken);
@@ -110,5 +120,18 @@ public class PlaylistApplicationService : IPlaylistApplicationService
             .GetToAvailableUserAsync(token, user, playlistId, cancellationToken);
 
         return playlist;
+    }
+
+    public async Task<IEnumerable<Playlist>> GetUserPlaylistsWithTagAsync(
+        string token, 
+        string tagName, 
+        CancellationToken cancellationToken)
+    {
+        var user = await _authorizationService
+            .GetUserAsync(token, cancellationToken);
+        var tag = await _tagRepository
+            .GetAsync(tagName, cancellationToken);
+        return await _playlistRepository
+            .GetUserWithTagAsync(user, tag, cancellationToken);
     }
 }

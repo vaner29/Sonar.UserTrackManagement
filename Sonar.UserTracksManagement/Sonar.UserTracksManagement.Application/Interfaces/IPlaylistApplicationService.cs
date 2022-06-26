@@ -11,6 +11,7 @@ public interface IPlaylistApplicationService
     Task<IEnumerable<TrackDto>> GetTracksFromPlaylistAsync(string token, Guid playlistId, CancellationToken cancellationToken);
     Task<IEnumerable<Playlist>> GetUserPlaylistsAsync(string token, CancellationToken cancellationToken);
     Task<Playlist> GetUserPlaylistAsync(string token, Guid playlistId, CancellationToken cancellationToken);
+    Task<IEnumerable<Playlist>> GetUserPlaylistsWithTagAsync(string token, string tagName, CancellationToken cancellationToken);
 
 
 }
