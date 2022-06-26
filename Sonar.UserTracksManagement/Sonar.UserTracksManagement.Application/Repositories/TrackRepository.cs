@@ -83,11 +83,10 @@ public class TrackRepository : ITrackRepository
     }
 
     public async Task ChangeTrackAccessLevelAsync(
-        Guid trackId, 
+        Track track, 
         AccessType newAccessType, 
         CancellationToken cancellationToken)
     {
-        var track = await GetAsync(trackId, cancellationToken);
         track.TrackMetaDataInfo.AccessType = newAccessType;
     }
 

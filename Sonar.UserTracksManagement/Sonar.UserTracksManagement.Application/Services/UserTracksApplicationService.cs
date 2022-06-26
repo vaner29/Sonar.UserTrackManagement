@@ -113,7 +113,7 @@ public class UserTracksApplicationService : IUserTracksApplicationService
             .GetToOwnerAsync(user, trackId, cancellationToken);
 
         _trackService.ChangeAccessType(track, type);
-        await _trackRepository.ChangeTrackAccessLevelAsync(trackId, type, cancellationToken);
+        await _trackRepository.ChangeTrackAccessLevelAsync(track, type, cancellationToken);
     }
 
     public async Task<IEnumerable<TrackDto>> GetUserTracksWithTagAsync(
