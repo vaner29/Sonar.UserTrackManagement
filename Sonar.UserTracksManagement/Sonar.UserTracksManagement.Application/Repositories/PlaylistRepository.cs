@@ -74,7 +74,7 @@ public class PlaylistRepository : IPlaylistRepository
         Guid playlistId,
         CancellationToken cancellationToken)
     {
-        var playlist = GetIfOwnerAsync(user, playlistId, cancellationToken);
+        var playlist = await GetIfOwnerAsync(user, playlistId, cancellationToken);
         _databaseContext.Remove(playlist);
         await _databaseContext.SaveChangesAsync(cancellationToken);
     }
