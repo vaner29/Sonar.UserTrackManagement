@@ -5,11 +5,6 @@ namespace Sonar.UserTracksManagement.Core.Services;
 
 public class PlaylistService : IPlaylistService
 {
-    public PlaylistService()
-    {
-    }
-
-
     public Playlist CreateNewPlaylist(Guid userId, string name)
     {
          return new Playlist(userId, name);
@@ -34,7 +29,7 @@ public class PlaylistService : IPlaylistService
         return playlistTrack;
     }
 
-    public List<Track> GetTracksFromPlaylist(Playlist playlist)
+    public IEnumerable<Track> GetTracksFromPlaylist(Playlist playlist)
     {
         return playlist.Tracks.Select(playlistTrack => playlistTrack.Track).ToList();
     }

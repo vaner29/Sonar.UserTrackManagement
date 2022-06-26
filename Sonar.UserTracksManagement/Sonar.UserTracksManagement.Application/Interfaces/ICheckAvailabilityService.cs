@@ -1,10 +1,13 @@
 ﻿using Sonar.UserTracksManagement.Core.Entities;
-using Sonar.UserTracksManagement.Core.Interfaces;
 
 namespace Sonar.UserTracksManagement.Application.Interfaces;
 
 public interface ICheckAvailabilityService
 {
-    bool CheckTrackAvailability(User userId, Track track);
+    Task<bool> CheckTrackAvailability(string token, User user, Track track, CancellationToken cancellationToken);
     bool CheckPlaylistAvailability(User userId, Playlist playlist);
+    bool IsTrackOwner(User user, Track track);
+    bool IsPlaylistOwner(User user, Playlist playlist);
+
+
 }
