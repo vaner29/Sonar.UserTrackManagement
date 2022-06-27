@@ -140,4 +140,10 @@ public class TrackRepository : ITrackRepository
                     item.TrackMetaDataInfo.Tags
                         .Contains(tag)));
     }
+
+    public async Task AddImageToTrackAsync(Track track, Image image, CancellationToken cancellationToken)
+    {
+        track.TrackImage = image;
+        await _databaseContext.SaveChangesAsync(cancellationToken);
+    }
 }

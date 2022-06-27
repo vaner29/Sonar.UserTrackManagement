@@ -10,6 +10,7 @@ public class Playlist
         UserId = userId;
         Name = name;
         _tracks = new List<PlaylistTrack>();
+        PlaylistImage = new Image();
         PlaylistMetaDataInfo = new MetaDataInfo(AccessType.Private); // TODO: track access level implementation
     }
 
@@ -17,6 +18,8 @@ public class Playlist
     public Guid Id { get; private init; }
     public Guid UserId { get; private init; }
     public string Name { get; private set; }
+    public Image PlaylistImage { get; set; }
+        
     public IReadOnlyList<PlaylistTrack> Tracks => _tracks.AsReadOnly();
 
     public void AddTrack(PlaylistTrack track)
