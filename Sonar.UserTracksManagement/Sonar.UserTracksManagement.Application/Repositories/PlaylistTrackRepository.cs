@@ -33,7 +33,7 @@ public class PlaylistTrackRepository : IPlaylistTrackRepository
         CancellationToken cancellationToken)
     {
         var playlistTrack = _playlistService.RemoveTrackFromPlaylist(playlist, track);
-        await _databaseContext.PlaylistTracks.AddAsync(playlistTrack, cancellationToken);
+        _databaseContext.PlaylistTracks.Remove(playlistTrack);
         await _databaseContext.SaveChangesAsync(cancellationToken);
     }
 }
