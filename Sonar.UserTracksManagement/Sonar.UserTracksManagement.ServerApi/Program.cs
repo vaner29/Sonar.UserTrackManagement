@@ -14,14 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<HttpClient>();
-//builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
+builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddScoped<IImageApplicationService, ImageApplicationService>();
 builder.Services.AddScoped<IPlaylistApplicationService, PlaylistApplicationService>();
 builder.Services.AddScoped<IUserTracksApplicationService, UserTracksApplicationService>();
 builder.Services.AddScoped<ICheckAvailabilityService, CheckAvailabilityService>();
 
-builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
-builder.Services.AddScoped<ICheckAvailabilityService, FakeCheckAvailabilityService>();
+// builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
+// builder.Services.AddScoped<ICheckAvailabilityService, FakeCheckAvailabilityService>();
 
 builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IUserTrackService, UserTrackService>();
