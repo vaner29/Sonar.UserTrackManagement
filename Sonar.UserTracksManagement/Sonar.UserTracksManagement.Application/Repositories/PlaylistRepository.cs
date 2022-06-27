@@ -12,7 +12,6 @@ public class PlaylistRepository : IPlaylistRepository
     private readonly IPlaylistService _playlistService;
     private readonly ICheckAvailabilityService _availabilityService;
     private readonly UserTracksManagementDatabaseContext _databaseContext;
-    private IPlaylistRepository _playlistRepositoryImplementation;
 
     public PlaylistRepository(
         IPlaylistService playlistService,
@@ -104,6 +103,12 @@ public class PlaylistRepository : IPlaylistRepository
                         .CheckPlaylistAvailability(user, item) &&
                     item.PlaylistMetaDataInfo.Tags
                         .Contains(tag)));
+    }
+
+    public async Task AddImageToPlaylistAsync(Playlist playlist, Image image, CancellationToken cancellationToken)
+    {
+        playlist.PlaylistImage = image;
+        await _databaseContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Playlist> GetAsync(

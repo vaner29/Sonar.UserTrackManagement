@@ -10,6 +10,7 @@ public class Playlist
         UserId = userId;
         Name = name;
         _tracks = new List<PlaylistTrack>();
+        PlaylistImage = new Image();
         PlaylistMetaDataInfo = new MetaDataInfo(AccessType.Private); // TODO: track access level implementation
     }
 

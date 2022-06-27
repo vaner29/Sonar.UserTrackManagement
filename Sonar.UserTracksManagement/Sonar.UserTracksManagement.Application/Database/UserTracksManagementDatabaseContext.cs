@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net.Mime;
+using Microsoft.EntityFrameworkCore;
 using Sonar.UserTracksManagement.Core.Entities;
 
 namespace Sonar.UserTracksManagement.Application.Database;
@@ -28,6 +29,8 @@ public class UserTracksManagementDatabaseContext : DbContext
     {
         modelBuilder.Entity<Playlist>().HasMany<PlaylistTrack>();
         modelBuilder.Entity<PlaylistTrack>().HasOne<Track>();
+        modelBuilder.Entity<Track>().HasOne<Image>();
+        modelBuilder.Entity<Playlist>().HasOne<Image>();
         modelBuilder.Entity<Playlist>().HasOne<MetaDataInfo>();
         modelBuilder.Entity<Track>().HasOne<MetaDataInfo>();
         modelBuilder.Entity<MetaDataInfo>().HasMany<Tag>();

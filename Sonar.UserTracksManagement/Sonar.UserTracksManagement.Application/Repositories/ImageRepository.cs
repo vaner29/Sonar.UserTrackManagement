@@ -7,29 +7,37 @@ namespace Sonar.UserTracksManagement.Application.Repositories;
 
 public class ImageRepository : IImageRepository
 {
-    private string root;
     private readonly UserTracksManagementDatabaseContext _databaseContext;
 
     public ImageRepository(UserTracksManagementDatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
-        root = ".";
     }
     
     public async Task SaveImageAsync(Image image, Stream fileStream, CancellationToken cancellationToken)
     {
-        File.Create(Path.Combine(root, image.Path));
-        var buffer = new byte[1024];
-        using var ms = new MemoryStream();
-        int read;
-        while ((read = await fileStream.ReadAsync(buffer, cancellationToken)) > 0)
+        var dirName = Path.GetDirectoryName(image.Path);
+        if (dirName == null)
         {
-            ms.Write(buffer, 0, read);
+            throw new Exception();
+        }
+        if (!Directory.Exists(dirName))
+        {
+            Directory.CreateDirectory(dirName);
+        }
+        var buffer = new byte[1024];
+        using (var ms = new MemoryStream())
+        {
+            int read;
+            while ((read = await fileStream.ReadAsync(buffer, cancellationToken)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+            await File.WriteAllBytesAsync(image.Path, ms.ToArray(), cancellationToken);
         }
 
         await _databaseContext.Images.AddAsync(image, cancellationToken);
         await _databaseContext.SaveChangesAsync(cancellationToken);
-        await File.WriteAllBytesAsync(Path.Combine(root, image.Path), ms.ToArray(), cancellationToken);
     }
     
     public async Task<Image> GetImageAsync(Guid imageId, CancellationToken cancellationToken)
@@ -51,13 +59,22 @@ public class ImageRepository : IImageRepository
         return image;
     }
 
-    public async Task<Stream> GetImageContentAsync(Image image, CancellationToken cancellationToken)
+    public async Task<byte[]> GetImageContentAsync(Image image, CancellationToken cancellationToken)
     {
-        if (File.Exists(Path.Combine(root + image.Path)))
+        if (!File.Exists(Path.Combine(image.Path)))
         {
             throw new NotFoundArgumentsException("Couldn't find image with given name");
         }
-        
-        return File.OpenRead(Path.Combine(root + image.Path));
+
+        using var ms = new MemoryStream();
+        var buffer = new byte[1024];
+        int read;
+        var stream = File.OpenRead(image.Path);
+        while ((read = await stream.ReadAsync(buffer, cancellationToken)) > 0)
+        {
+            ms.Write(buffer, 0, read);
+        }
+        stream.Close();
+        return ms.ToArray();
     }
 }

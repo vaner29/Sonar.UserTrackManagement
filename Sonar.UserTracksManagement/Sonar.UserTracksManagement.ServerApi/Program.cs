@@ -4,6 +4,7 @@ using Sonar.UserProfile.ApiClient;
 using Sonar.UserProfile.ApiClient.Interfaces;
 using Sonar.UserTracksManagement.Application.Database;
 using Sonar.UserTracksManagement.Application.Interfaces;
+using Sonar.UserTracksManagement.Application.Repositories;
 using Sonar.UserTracksManagement.Application.Services;
 using Sonar.UserTracksManagement.Core.Interfaces;
 using Sonar.UserTracksManagement.Core.Services;
@@ -14,13 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<HttpClient>();
 //builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
-builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
 builder.Services.AddScoped<IImageApplicationService, ImageApplicationService>();
 builder.Services.AddScoped<IPlaylistApplicationService, PlaylistApplicationService>();
 builder.Services.AddScoped<IUserTracksApplicationService, UserTracksApplicationService>();
 builder.Services.AddScoped<ICheckAvailabilityService, CheckAvailabilityService>();
-//builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
-//builder.Services.AddScoped<ICheckAvailabilityService, FakeCheckAvailabilityService>();
+
+builder.Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
+builder.Services.AddScoped<ICheckAvailabilityService, FakeCheckAvailabilityService>();
 
 builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<IUserTrackService, UserTrackService>();
@@ -30,10 +31,7 @@ builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
 builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IPlaylistTrackRepository, PlaylistTrackRepository>();
-
-builder.Services.AddScoped<IPlaylistApplicationService, PlaylistApplicationService>();
-builder.Services.AddScoped<IUserTracksApplicationService, UserTracksApplicationService>();
-builder.Services.AddScoped<ITagApplicationService, TagApplicationService>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
 
 
